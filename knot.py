@@ -237,7 +237,6 @@ class Knot:
      # checks if dowker code is lexicographically minimal
      def isDowkerLexographic(self):
           start = self.dowker[0] - 1    #Stores the difference of the first crossing numbers
-          print(self)
           if start > len(self.dowker):        #If reversing traversal direction would make a smaller diff, return False
                return False
           for crossing in range(len(self.dowker)):   #Iterates thru code, checks if crossings are same distance or less
