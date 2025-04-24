@@ -135,7 +135,6 @@ class Knot:
                                    self.dowker = dowker_store
           return self.dowker
 
-
      def typeIIIflag(odd_x, odd_y, odd_z, even_x, even_y, even_z):
           dir = True  # direction flag for how to rotate the three crossings
 
@@ -168,8 +167,7 @@ class Knot:
                     return False, dir
           else:
                return False, dir  # all crossings have the same sign, invalid
-            
-         
+              
      def typeIIIindex(even_x, even_y, even_z): # handles same iteration indexes and zeroes
           # ensure all three crossings are at distinct indices
           if even_x != even_y and even_y != even_z and even_z != even_x:
@@ -177,7 +175,6 @@ class Knot:
                if even_x != 0 and even_y != 0 and even_z != 0:
                     return True
           return False
-
      
      def typeIIIsigns(x, y, z, dowker): # handles swapping of signs
                #print(dowker[x], dowker[y], dowker[z])
