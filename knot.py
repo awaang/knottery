@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 class Knot:
      def __init__(self, dowker):
         self.dowker = dowker  
-    
+
      def typeI(self):
           zeroes = 0 # tracks how many entries have been removed (set to 0)
 
@@ -218,43 +218,40 @@ class Knot:
           return det
     
      def listremove(lst):
-         lst = [n for n in lst if len(n) != 0]
-         return lst
+          lst = [n for n in lst if len(n) != 0]
+          return lst
     
      def zeroremove(self):               #Removes 0s from dowker codes
          self.dowker = [n for n in self.dowker if n != 0]
          return self.dowker
     
      def signflip(self):       #Used when all crossings on knot are negative
-         flip = True
-         for n in range(len(self.dowker)):
-              if self.dowker[n] > 0:
-                   flip = False
-         if flip == True:
-              for n in range(len(self.dowker)):
-                   self.dowker[n] = self.dowker[n] * -1
-         return self.dowker
-    
-     def dowkerpossible(self):      #Tests for impossible dowker codes, returning False for impossible dowker codes
-         G = Knot.graphifydowker(self)
-         var = net.is_planar(G)              #Checks for planarity
-         return var
-    
-     def DowkerIsLexographic(self):
-         start = self.dowker[0] - 1    #Stores the difference of the first crossing numbers
-         if start > len(self.dowker):        #If reversing traversal direction would make a smaller diff, return False
-              return False
-         for crossing in range(len(self.dowker)):   #Iterates thru code, checks if crossings are same distance or less
-              odd = 2 * crossing + 1                #Odd part of dowker code
-              even  = self.dowker[crossing]            #Even part of dowker code
-              diff = np.abs(odd - even)           #Checks difference of each crossing in dowker code
-              if diff < start:               #If difference less than first crossing difference return false
-                   return False
-         return True               #Returns true if escaped all flagging
-    
-     def prime(self):
-         sequence = []             #List for consecutive subsequence that indicates composite knot
-         for x in range(len(self.dowker)):             #Iterates thru dowker code
+          flip = True
+          for n in range(len(self.dowker)):
+               if self.dowker[n] > 0:
+                    flip = False
+          if flip == True:
+               for n in range(len(self.dowker)):
+                    self.dowker[n] = self.dowker[n] * -1
+          return self.dowker
+
+     # checks if dowker code is lexicographically minimal
+     def isDowkerLexographic(self):
+          start = self.dowker[0] - 1    #Stores the difference of the first crossing numbers
+          if start > len(self.dowker):        #If reversing traversal direction would make a smaller diff, return False
+               return False
+          for crossing in range(len(self.dowker)):   #Iterates thru code, checks if crossings are same distance or less
+               odd = 2 * crossing + 1                #Odd part of dowker code
+               even  = self.dowker[crossing]            #Even part of dowker code
+               diff = np.abs(odd - even)           #Checks difference of each crossing in dowker code
+               if diff < start:               #If difference less than first crossing difference return false
+                    return False
+          return True               #Returns true if escaped all flagging
+     
+     # checks if dowker code is prime
+     def isPrime(self):
+          sequence = []             #List for consecutive subsequence that indicates composite knot
+          for x in range(len(self.dowker)):             #Iterates thru dowker code
                for y in (range(len(self.dowker) - x)):           #At each index in dowker code, iterates through remainder of code
                     consecutive = True            #Variable for consecutiveness of subsequence
                     odd = 2 * (x + y) + 1              #Stores odd part of dowker code adjusting for the starting index for subsequence
@@ -271,12 +268,19 @@ class Knot:
                     if consecutive == True and len(sequence) != len(self.dowker) * 2:               #If consecutive subsequence that is not entire dowker code, return composite
                          return False
                sequence = []            #Resets subsequence for next index in dowker code
-         return True               #If no consecutive subsequences found, return prime
-    
+          return True               #If no consecutive subsequences found, return prime
+     
+     # checks if dowker code is possible
+     def isDowkerPossible(self): 
+          G = Knot.graphifydowker(self)
+          var = net.is_planar(G) # planarity check
+          return var
+     
+     # detects all order-1 flypes (flypable tangles) in the knot, returning data structures to describe the sequences involved and the crossing location.
      def flypedetect(self):
-         flypes = []
-         dowker = self.dowker
-         for x in range(2 * len(self.dowker)):              #Iterates through each number in dowker code
+          flypes = []
+          dowker = self.dowker
+          for x in range(2 * len(self.dowker)):              #Iterates through each number in dowker code
                sequence1 = []           #Two sequences that make up tangle
                sequence2 = []
                consecutive = True            #Variable for consecutiveness indicating two strands
@@ -312,13 +316,13 @@ class Knot:
                               flag, crossing = Knot.flypecrossing(self, sequence2[len(sequence2) - 1] + 1, sequence1, sequence2)            #Finds a crossing after end of second sequence
                               flypes.append(Knot.flypeappendage(flag, flypes, crossing, sequence1, sequence2))
                               flypes = Knot.listremove(flypes)             #Removes all lists added through flypeappendage()
-         for i in range(len(flypes)):             #Removes the case of crossing for flype detected inside tangle
-              if flypes[i][2] in flypes[i][0] or flypes[i][2] in flypes[i][1]:
-                    flypes[i] = 0
-              elif len(flypes[i][0]) == len(self.dowker) - 1:
-                    flypes[i] = 0
-         flypes = Knot(flypes).zeroremove()            #For formatting
-         return flypes
+          for i in range(len(flypes)):             #Removes the case of crossing for flype detected inside tangle
+               if flypes[i][2] in flypes[i][0] or flypes[i][2] in flypes[i][1]:
+                         flypes[i] = 0
+               elif len(flypes[i][0]) == len(self.dowker) - 1:
+                         flypes[i] = 0
+          flypes = Knot(flypes).zeroremove()            #For formatting
+          return flypes
      
      def flypecrossing(self, x, sequence1, sequence2):
          if x < 1:            #If crossing being checked is below 1, wraps to top of dowker code
@@ -429,150 +433,150 @@ class Knot:
          return dowker
     
      def performflype(self, flype):
-         startingdowker = self.dowker
-         G = Knot.graphifydowker(self)
-         #net.draw(G, with_labels = True)
-         #plt.show()
-         tangleedgeedit = []
-         crossingedgeedit = []
-         sequence1min = flype[0][0]
-         sequence2min = flype[1][0]
-         sequence1max = flype[0][len(flype[1]) - 1]
-         sequence2max = flype[1][len(flype[1]) - 1]
-         crossingodd = flype[2]
-         indexodd = int((crossingodd - 1)/2)
-         crossingeven = self.dowker[indexodd]
-         tangleedgeedit.append(Knot.edgeidentification(self, sequence1min, False))
-         tangleedgeedit.append(Knot.edgeidentification(self, sequence2min, False))
-         tangleedgeedit.append(Knot.edgeidentification(self, sequence1max, True))
-         tangleedgeedit.append(Knot.edgeidentification(self, sequence2max, True))
-         crossingedgeedit.append(Knot.edgeidentification(self, crossingodd, True))
-         crossingedgeedit.append(Knot.edgeidentification(self, crossingodd, False))
-         crossingedgeedit.append(Knot.edgeidentification(self, crossingeven, True))
-         crossingedgeedit.append(Knot.edgeidentification(self, crossingeven, False))
-         for edgecross in crossingedgeedit:
-              for edgetang in tangleedgeedit:
-                   if edgetang == 0 or edgecross == 0:
-                        pass
-                   elif set(edgecross) == set(edgetang):
-                        index = crossingedgeedit.index(edgecross)
-                        crossingedgeedit[index] = 0
-                        index = tangleedgeedit.index(edgetang)
-                        tangleedgeedit[index] = 0
-         crossingedgeedit = Knot(crossingedgeedit).zeroremove()
-         tangleedgeedit = Knot(tangleedgeedit).zeroremove()
-         for edge in tangleedgeedit:
+          startingdowker = self.dowker
+          G = Knot.graphifydowker(self)
+          #net.draw(G, with_labels = True)
+          #plt.show()
+          tangleedgeedit = []
+          crossingedgeedit = []
+          sequence1min = flype[0][0]
+          sequence2min = flype[1][0]
+          sequence1max = flype[0][len(flype[1]) - 1]
+          sequence2max = flype[1][len(flype[1]) - 1]
+          crossingodd = flype[2]
+          indexodd = int((crossingodd - 1)/2)
+          crossingeven = self.dowker[indexodd]
+          tangleedgeedit.append(Knot.edgeidentification(self, sequence1min, False))
+          tangleedgeedit.append(Knot.edgeidentification(self, sequence2min, False))
+          tangleedgeedit.append(Knot.edgeidentification(self, sequence1max, True))
+          tangleedgeedit.append(Knot.edgeidentification(self, sequence2max, True))
+          crossingedgeedit.append(Knot.edgeidentification(self, crossingodd, True))
+          crossingedgeedit.append(Knot.edgeidentification(self, crossingodd, False))
+          crossingedgeedit.append(Knot.edgeidentification(self, crossingeven, True))
+          crossingedgeedit.append(Knot.edgeidentification(self, crossingeven, False))
+          for edgecross in crossingedgeedit:
+               for edgetang in tangleedgeedit:
+                    if edgetang == 0 or edgecross == 0:
+                         pass
+                    elif set(edgecross) == set(edgetang):
+                         index = crossingedgeedit.index(edgecross)
+                         crossingedgeedit[index] = 0
+                         index = tangleedgeedit.index(edgetang)
+                         tangleedgeedit[index] = 0
+          crossingedgeedit = Knot(crossingedgeedit).zeroremove()
+          tangleedgeedit = Knot(tangleedgeedit).zeroremove()
+          for edge in tangleedgeedit:
+                    edgetuple = (edge[0], edge[1])
+                    if edgetuple in G.edges and edge not in crossingedgeedit:
+                         G.remove_edge(edge[0], edge[1])
+          for edge in crossingedgeedit:
                edgetuple = (edge[0], edge[1])
-               if edgetuple in G.edges and edge not in crossingedgeedit:
+               if edgetuple in G.edges:
                     G.remove_edge(edge[0], edge[1])
-         for edge in crossingedgeedit:
-              edgetuple = (edge[0], edge[1])
-              if edgetuple in G.edges:
-                   G.remove_edge(edge[0], edge[1])
-         #net.draw(G, with_labels = True)
-         #plt.show()
-         if len(flype[0]) % 2 == 0: # If there are an even number of crossings inside flype
+          #net.draw(G, with_labels = True)
+          #plt.show()
+          if len(flype[0]) % 2 == 0: # If there are an even number of crossings inside flype
+                    if crossingedgeedit[0][0] % 2 == tangleedgeedit[0][0] % 2:
+                         G.add_edge(crossingedgeedit[0][0], tangleedgeedit[0][1])
+                         G.add_edge(tangleedgeedit[0][0], crossingedgeedit[0][1])
+                         G.add_edge(crossingedgeedit[1][0], tangleedgeedit[1][1])
+                         G.add_edge(tangleedgeedit[1][0], crossingedgeedit[1][1])
+                    else:
+                         G.add_edge(crossingedgeedit[0][0], tangleedgeedit[1][1])
+                         G.add_edge(tangleedgeedit[0][0], crossingedgeedit[1][1])
+                         G.add_edge(crossingedgeedit[1][0], tangleedgeedit[0][1])
+                         G.add_edge(tangleedgeedit[1][0], crossingedgeedit[0][1])
+          else:
                if crossingedgeedit[0][0] % 2 == tangleedgeedit[0][0] % 2:
-                    G.add_edge(crossingedgeedit[0][0], tangleedgeedit[0][1])
-                    G.add_edge(tangleedgeedit[0][0], crossingedgeedit[0][1])
-                    G.add_edge(crossingedgeedit[1][0], tangleedgeedit[1][1])
-                    G.add_edge(tangleedgeedit[1][0], crossingedgeedit[1][1])
-               else:
                     G.add_edge(crossingedgeedit[0][0], tangleedgeedit[1][1])
                     G.add_edge(tangleedgeedit[0][0], crossingedgeedit[1][1])
                     G.add_edge(crossingedgeedit[1][0], tangleedgeedit[0][1])
                     G.add_edge(tangleedgeedit[1][0], crossingedgeedit[0][1])
-         else:
-              if crossingedgeedit[0][0] % 2 == tangleedgeedit[0][0] % 2:
-                   G.add_edge(crossingedgeedit[0][0], tangleedgeedit[1][1])
-                   G.add_edge(tangleedgeedit[0][0], crossingedgeedit[1][1])
-                   G.add_edge(crossingedgeedit[1][0], tangleedgeedit[0][1])
-                   G.add_edge(tangleedgeedit[1][0], crossingedgeedit[0][1])
-              else:
-                   G.add_edge(crossingedgeedit[0][0], tangleedgeedit[0][1])
-                   G.add_edge(tangleedgeedit[0][0], crossingedgeedit[0][1])
-                   G.add_edge(crossingedgeedit[1][0], tangleedgeedit[1][1])
-                   G.add_edge(tangleedgeedit[1][0], crossingedgeedit[1][1])
-         #net.draw(G, with_labels = True)
-         #plt.show()
-         dowker = Knot.dowkerifygraph(self, G)
-         dowker = Knot.makelexographic(Knot(dowker))
-         return dowker   
+               else:
+                    G.add_edge(crossingedgeedit[0][0], tangleedgeedit[0][1])
+                    G.add_edge(tangleedgeedit[0][0], crossingedgeedit[0][1])
+                    G.add_edge(crossingedgeedit[1][0], tangleedgeedit[1][1])
+                    G.add_edge(tangleedgeedit[1][0], crossingedgeedit[1][1])
+          #net.draw(G, with_labels = True)
+          #plt.show()
+          dowker = Knot.dowkerifygraph(self, G)
+          dowker = Knot.makelexographic(Knot(dowker))
+          return dowker   
 
      def edgeidentification(self, number, max):
-         edge = []
-         if number % 2 == 0: 
-              index = self.dowker.index(number)
-              if max == True:
-                   node1 = (4 * index) + 3
-                   next = number + 1
-                   if next > 2 * len(self.dowker):
-                        next = 1
-                   nextindex = int((next - 1)/2)
-                   node2 = (4 * nextindex) + 2
-                   edge.append(node1)
-                   edge.append(node2)
-              else:
-                   node1 = (4 * index) + 1
-                   before = number - 1
-                   beforeindex = int((before - 1)/2)
-                   node2 = (4 * beforeindex) + 4
-                   edge.append(node1)
-                   edge.append(node2)
-         else:
-              index = int((number - 1)/2)
-              if max == True:
-                   node1 = (4 * index) + 4
-                   next = number + 1
-                   nextindex = self.dowker.index(next)
-                   node2 = (4 * nextindex) + 1
-                   edge.append(node1)
-                   edge.append(node2)
-              else:
-                   node1 = (4 * index) + 2
-                   before = number - 1
-                   if before < 1: 
-                        before = 2 * len(self.dowker)
-                   beforeindex = self.dowker.index(before)
-                   node2 = (4 * beforeindex) + 3
-                   edge.append(node1)
-                   edge.append(node2)
-         return edge
+          edge = []
+          if number % 2 == 0: 
+               index = self.dowker.index(number)
+               if max == True:
+                    node1 = (4 * index) + 3
+                    next = number + 1
+                    if next > 2 * len(self.dowker):
+                         next = 1
+                    nextindex = int((next - 1)/2)
+                    node2 = (4 * nextindex) + 2
+                    edge.append(node1)
+                    edge.append(node2)
+               else:
+                    node1 = (4 * index) + 1
+                    before = number - 1
+                    beforeindex = int((before - 1)/2)
+                    node2 = (4 * beforeindex) + 4
+                    edge.append(node1)
+                    edge.append(node2)
+          else:
+               index = int((number - 1)/2)
+               if max == True:
+                    node1 = (4 * index) + 4
+                    next = number + 1
+                    nextindex = self.dowker.index(next)
+                    node2 = (4 * nextindex) + 1
+                    edge.append(node1)
+                    edge.append(node2)
+               else:
+                    node1 = (4 * index) + 2
+                    before = number - 1
+                    if before < 1: 
+                         before = 2 * len(self.dowker)
+                    beforeindex = self.dowker.index(before)
+                    node2 = (4 * beforeindex) + 3
+                    edge.append(node1)
+                    edge.append(node2)
+          return edge
      
     
      def graphifydowker(self):
-         G = net.Graph()
-         crossings = len(self.dowker) # # of crossings for indexing
-         for x in range(4 * crossings):
-              G.add_node(x + 1)         #Replicates the four vertices of each crossing
-         for y in range(crossings):          #Creates the edges of each of the crossings
-              for z in range(4):
-                   if z != 3:
+          G = net.Graph()
+          crossings = len(self.dowker) # # of crossings for indexing
+          for x in range(4 * crossings):
+               G.add_node(x + 1)         #Replicates the four vertices of each crossing
+          for y in range(crossings):          #Creates the edges of each of the crossings
+               for z in range(4):
+                    if z != 3:
                          node1 = (4 * y) + z + 1
                          node2 = (4 * y) + z + 2
                          #print("Crossing square:", node1, node2)
                          G.add_edge(node1, node2)
-                   else:           #For edge (4, 1) for example (see attached image)
+                    else:           #For edge (4, 1) for example (see attached image)
                          node1 = (4 * y) + z + 1
                          node2 = (4 * y) + 1
                          #print("Crossing square:", node1, node2)
                          G.add_edge(node1, node2)
-         for w in range(crossings):
-              node1 = 4 * (w + 1)       #Starts at odd node
-              odd = (2 * w) + 1         #Replicates odd number at index in dowker code
-              evenindex = self.dowker.index(odd + 1)           #Finds next even's index in dowker code
-              node2 = (evenindex * 4) + 1         #Finds next even in dowker codes node based on index
-              #print("Odd to even:", node1, node2)
-              G.add_edge(node1, node2)       #Handles odd to even edges of dowker code
-              even = self.dowker[w]          #Finds even number at index
-              node1 = (4 * w) + 3            #Starts at even node of index
-              if even != crossings * 2:
+          for w in range(crossings):
+               node1 = 4 * (w + 1)       #Starts at odd node
+               odd = (2 * w) + 1         #Replicates odd number at index in dowker code
+               evenindex = self.dowker.index(odd + 1)           #Finds next even's index in dowker code
+               node2 = (evenindex * 4) + 1         #Finds next even in dowker codes node based on index
+               #print("Odd to even:", node1, node2)
+               G.add_edge(node1, node2)       #Handles odd to even edges of dowker code
+               even = self.dowker[w]          #Finds even number at index
+               node1 = (4 * w) + 3            #Starts at even node of index
+               if even != crossings * 2:
                     node2 = (even * 2) + 2             #Finds next odd node
-              else:
+               else:
                     node2 = 2
-              #print("Even to odd:", node1, node2)
-              G.add_edge(node1, node2)            #Handles even to odd edges of dowker code
-         return G
+               #print("Even to odd:", node1, node2)
+               G.add_edge(node1, node2)            #Handles even to odd edges of dowker code
+          return G
     
      def dowkerifygraph(self, G):
          node = 4

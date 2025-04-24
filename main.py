@@ -13,11 +13,11 @@ def main():
      permutations = gendowkers(8)
      
      for i in range(len(permutations)):
-          if Knot(permutations[i]).DowkerIsLexographic() == False: # criteria 1: checks if the dowker code is lexographically minimal
+          if Knot(permutations[i]).isDowkerLexographic() == False: # criteria 1: checks if the dowker code is lexographically minimal
                permutations[i] = 0
-          elif Knot(permutations[i]).prime() == False: # criteria 2: checks if the dowker code is prime
+          elif Knot(permutations[i]).isPrime() == False: # criteria 2: checks if the dowker code is prime
                permutations[i] = 0 
-          elif Knot(permutations[i]).dowkerpossible() == False: # criteria 3: checks if the dowker code is possible
+          elif Knot(permutations[i]).isDowkerPossible() == False: # criteria 3: checks if the dowker code is possible
                permutations[i] = 0
      
      permutations = Knot(permutations).zeroremove() # remove all zeroed permutations
