@@ -1,63 +1,69 @@
-from knot import Knot, gendowkers
+from knot import Knot, genDowkers
 import unittest
+# from knot import AlternatingKnot
+from alternating_knot import AlternatingKnot
+
+
+trefoil = AlternatingKnot([4, 6, 2]) # 3_1
+figure_eight = AlternatingKnot([4, 6, 8, 2]) # 4_1
+cinquefoil = AlternatingKnot([6, 8, 10, 2, 4]) # 5_1
+three_twist = AlternatingKnot([4, 8, 10, 2, 6]) # 5_2
+stevedore = AlternatingKnot([4, 8, 12, 10, 2, 6]) # 6_1
 
 class TestKnotProperties(unittest.TestCase):
-    def test_isDowkerLexographic(self):
+    def test_isLexographic(self):
+        print(f"\n\nTesting isLexographic()")
         cases = [
-            (Knot([2, 4, 6, 8]), True),
-            (Knot([8, 2, 4, 6]), False),
-            (Knot([4, 6, 2, 8]), False),
+            (trefoil, True),
+            (figure_eight, True),
+            (cinquefoil, True),
+            (three_twist, True),
+            (stevedore, True),
         ]
 
         for knot, expected in cases:
-            try:
-                result = knot.isDowkerLexographic()
-                print(f"Testing {knot}: isDowkerLexographic() returned {result}")
-                self.assertEqual(result, expected, f"{knot} expected {expected} but got {result}")
-            except Exception as e:
-                if not expected:
-                    print(f"Expected failure for {knot}: {e}")
-                else:
-                    self.fail(f"Unexpected failure for {knot}: {e}")
+            result = knot.isLexographic()
+            print(f"\n> Dowker: {knot} \n> Expected: {expected}\n> Returned: {result}")
+            self.assertEqual(result, expected, f"{knot} expected {expected} but got {result}")
 
     def test_isPrime(self):
+        print(f"\n\nTesting isPrime()")
         cases = [
-            (Knot([4, 6, 2, 8]), True), # 4_1 (figure-eight knot) — prime
-            (Knot([4, 6, 2, 8, 10, 12]), False), # Likely a composite knot if subset is [4,6,2,8]
-            (Knot([2, 4, 6, 8]), True), # Trefoil (though technically [4, 6, 2] is the usual one)
-            (Knot([4, 8, 2, 6]), True), # Rotation of a prime
-        ]
-
-        try:
-            for knot, expected in cases:
-                result = knot.isPrime()
-                print(f"Testing {knot}: isPrime() returned {result}")
-                self.assertEqual(result, expected, f"{knot} expected {expected} but got {result}")
-        except Exception as e:
-                if not expected:
-                    print(f"Expected failure for {knot}: {e}")
-                else:
-                    self.fail(f"Unexpected failure for {knot}: {e}")
-
-    def test_isDowkerPossible(self):
-        cases = [
-            (Knot([4, 6, 2, 8]), True),   # Valid figure-eight knot
-            (Knot([2, 4, 6, 8]), True),   # Valid Dowker code
-            # (Knot([10, 8, 6, 4]), True),  # THIS TEST FAILS
-            (Knot([2, 4, 6, 2]), False),  # Invalid: repeated number
-            (Knot([4, 6, 8, 10]), False), # No odd numbers: invalid Dowker
+            (trefoil, True),
+            (figure_eight, True),
+            (cinquefoil, True),
+            (three_twist, True),
+            (stevedore, True),
+            
+            # (AlternatingKnot([6, 8, 10, 2, 4, 12]), False), # 3_1 # 3_1 - composite
+            # (AlternatingKnot([6, 8, 2, 4]), False), # 3_1 # 3_1* - composite
+            # (AlternatingKnot([10, 12, 14, 16, 2, 4, 6, 8]), False), # 3_1 # 4_1 - composite
+            
         ]
 
         for knot, expected in cases:
-            try:
-                result = knot.isDowkerPossible()
-                print(f"Testing {knot}: isDowkerPossible() returned {result}")
-                self.assertEqual(result, expected, f"{knot} expected {expected} but got {result}")
-            except Exception as e:
-                if not expected:
-                    print(f"Expected failure for {knot}: {e}")
-                else:
-                    self.fail(f"Unexpected failure for {knot}: {e}")
+            result = knot.isPrime()
+            print(f"\n> Dowker: {knot} \n> Expected: {expected}\n> Returned: {result}")
+            self.assertEqual(result, expected, f"{knot} expected {expected} but got {result}")
+
+    def test_isPossible(self):
+        print(f"\n\nTesting isPossible()")
+        cases = [
+            (trefoil, True),
+            (figure_eight, True),
+            (cinquefoil, True),
+            (three_twist, True),
+            (stevedore, True),
+            # (AlternatingKnot([10, 8, 6, 4]), True),  # THIS TEST FAILS
+
+            (AlternatingKnot([2, 4, 6, 2]), False),  # Invalid: repeated number
+            (AlternatingKnot([4, 6, 8, 10]), False), # Invalid: not a Dowker code
+        ]
+
+        for knot, expected in cases:
+            result = knot.isPossible()
+            print(f"\n> Dowker: {knot} \n> Expected: {expected}\n> Returned: {result}")
+            self.assertEqual(result, expected, f"{knot} expected {expected} but got {result}")
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,4 +1,6 @@
-from knot import Knot, gendowkers
+from knot import genDowkers
+from alternating_knot import AlternatingKnot
+from non_alternating_knot import NonAlternatingKnot
 
 # Notes:
 # - Find order 1 flype permutations from given permutation, then see if self contained, keep going
@@ -9,25 +11,25 @@ from knot import Knot, gendowkers
 
 # - at 8 crossings, there are 17 non prime knots included atm
 
-def main():
-     permutations = gendowkers(8)
+def genAlternatingKnots():
+     permutations = genDowkers(8)
      
      for i in range(len(permutations)):
-          if Knot(permutations[i]).isDowkerLexographic() == False: # criteria 1: checks if the dowker code is lexographically minimal
+          if AlternatingKnot(permutations[i]).isLexographic() == False: # criteria 1: checks if the dowker code is lexographically minimal
                permutations[i] = 0
-          elif Knot(permutations[i]).isPrime() == False: # criteria 2: checks if the dowker code is prime
+          elif AlternatingKnot(permutations[i]).isPrime() == False: # criteria 2: checks if the dowker code is prime
                permutations[i] = 0 
-          elif Knot(permutations[i]).isDowkerPossible() == False: # criteria 3: checks if the dowker code is possible
+          elif AlternatingKnot(permutations[i]).isPossible() == False: # criteria 3: checks if the dowker code is possible
                permutations[i] = 0
      
-     permutations = Knot(permutations).zeroremove() # remove all zeroed permutations
+     permutations = AlternatingKnot(permutations).zeroremove() # remove all zeroed permutations
 
      finallist = []
 
      # criteria 4: checks if the dowker code is minimal with respect to flyping
      for permutation in permutations:
           if permutation in permutations:
-               flypeclass = Knot.findflypeclass(Knot(permutation), [permutation]) 
+               flypeclass = AlternatingKnot.findflypeclass(AlternatingKnot(permutation), [permutation]) 
                permutations = [perm for perm in permutations if perm not in flypeclass] 
                for x in range(len(permutation)):
                     integers = []
@@ -41,22 +43,26 @@ def main():
                          if flypeclass[y] != 0:
                               if integers[y] != minimum:
                                    flypeclass[y] = 0
-               finallist.append(Knot.zeroremove(Knot(flypeclass))[0]) 
+               finallist.append(AlternatingKnot.zeroremove(AlternatingKnot(flypeclass))[0]) 
      
      finallist = [x for n,x in enumerate(finallist) if x not in finallist[:n]] # removes duplicates
-     
-     for knot in range(len(finallist)):
-          print(finallist[knot])
-     print(len(finallist), "Knots")
+
+     return finallist
+
+def genNonAlternatingKnots():
+     return
+
+def main():
+     AlternatingList = genAlternatingKnots()
+     NonAlternatingList = genNonAlternatingKnots()
+
+     print("\nAlternating Knots:")
+     for knot in AlternatingList:
+          print(knot)
+
+     print("\nNon-Alternating Knots:")
+     for knot in NonAlternatingList:
+          print(knot)
 
 if __name__ == "__main__":
     main()
-
-# performflype() manual testing
-
-# flypes = Knot.flypedetect(Knot(permutation))
-# flypeclass = []
-# for flype in flypes:
-     # newcode = Knot.performflype(Knot(permutation), flype)
-     # flypeclass.append(newcode)
-# print(permutation, "... CODES:", flypeclass, "\n\n")

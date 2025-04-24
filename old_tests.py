@@ -1,4 +1,4 @@
-from knot import Knot, gendowkers
+from knot import Knot, genDowkers
 
 trefoil = Knot([6, -10, 12, 4, -8, 2, 14])
 square = Knot([6, 8, 2, 4])
@@ -12,7 +12,7 @@ typeItrefoil = Knot([6, 4, 8, 2])
 sixthree = Knot([4, 8, 10, 2, 12, 6])
 sixone = Knot([4, 8, 12, 10, 2, 6])
 
-print("Dowker Generation 3 crossings:\n", gendowkers(3))
+print("Dowker Generation 3 crossings:\n", genDowkers(3))
 print("\n")
 print("Trefoil:", trefoil.dowker)
 print("trefoilI:", trefoil.typeI())
@@ -41,29 +41,29 @@ else:
      print("SquarePoss: False")
 print("\n")
 print("Lexographic1:", lexographic1.dowker)
-var = lexographic1.DowkerIsLexographic()
+var = lexographic1.isLexographic()
 if var == True:
      print("Lexographic1: True")
 else:
      print("Lexographic1: False")
 print("Lexographic2:", lexographic2.dowker)
-var = lexographic2.DowkerIsLexographic()
+var = lexographic2.isLexographic()
 if var == True:
      print("Lexographic2: True")
 else:
      print("Lexographic2: False")
 print("\n")
-var = comptrefoils.prime()
+var = comptrefoils.isPrime()
 if var == True:
      print("Comptrefoils: Prime")
 else:
      print("Comptrefoils: Composite")
-var = typeItrefoil.prime()
+var = typeItrefoil.isPrime()
 if var == True:
      print("TypeItrefoil: Prime")
 else:
      print("TypeItrefoil: Composite")
-var = square.prime()
+var = square.isPrime()
 if var == True:
      print("Square: Prime")
 else:
@@ -82,3 +82,12 @@ print("Six Three Before:")
 print(sixthree.dowker)
 print("Six Three After:")
 print(Knot.performflype(sixthree, [[2, 3], [7, 8], 1]))
+
+# performflype() manual testing
+
+# flypes = AlternatingKnot.flypedetect(AlternatingKnot(permutation))
+# flypeclass = []
+# for flype in flypes:
+     # newcode = AlternatingKnot.performflype(AlternatingKnot(permutation), flype)
+     # flypeclass.append(newcode)
+# print(permutation, "... CODES:", flypeclass, "\n\n")
