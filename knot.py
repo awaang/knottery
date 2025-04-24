@@ -1,7 +1,6 @@
 import itertools
 import numpy as np
 import networkx as net
-import matplotlib.pyplot as plt
 
 class Knot:
      def __init__(self, dowker):
@@ -238,6 +237,7 @@ class Knot:
      # checks if dowker code is lexicographically minimal
      def isDowkerLexographic(self):
           start = self.dowker[0] - 1    #Stores the difference of the first crossing numbers
+          print(self)
           if start > len(self.dowker):        #If reversing traversal direction would make a smaller diff, return False
                return False
           for crossing in range(len(self.dowker)):   #Iterates thru code, checks if crossings are same distance or less
@@ -635,6 +635,9 @@ class Knot:
                     if code not in checked:
                          checked = Knot.findflypeclass(Knot(code), checked)
                return checked
+          
+     def __str__(self):
+          return f"{self.dowker}"
           
 def gendowkers(crossings):   #Generates all the possible dowker codes with up to n crossings
      numbers = []           #Used as a list of even numbers in dowker code up to n crossings
