@@ -50,7 +50,7 @@ def genAlternatingKnots():
      return finallist
 
 def genNonAlternatingKnots():
-     return
+     return []
 
 def main():
      AlternatingList = genAlternatingKnots()
