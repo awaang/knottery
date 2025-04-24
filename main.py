@@ -1,5 +1,14 @@
 from knot import Knot, gendowkers
 
+# Notes:
+# - Find order 1 flype permutations from given permutation, then see if self contained, keep going
+# - Check only the permutations that are not self contained
+# - Check each "tree" from each dowker code
+# - Use sorting algorithm to determine lexographically minimal code
+# - Eliminate self contained list of flypes from permutations, add lexographically minimal code to a list (Final list)
+
+# - at 8 crossings, there are 17 non prime knots included atm
+
 def main():
      permutations = gendowkers(8)
      
@@ -16,6 +25,7 @@ def main():
      finallist = []
      flypes = []
 
+     # criteria 4: checks if the dowker code is minimal with respect to flyping
      for permutation in permutations:
           if permutation in permutations:
                flypeclass = Knot.findflypeclass(Knot(permutation), [permutation]) 
@@ -37,7 +47,6 @@ def main():
      
      finallist = [x for n,x in enumerate(finallist) if x not in finallist[:n]] # removes duplicates
      
-     print("FINAL LIST:")
      for knot in range(len(finallist)):
           print(finallist[knot])
      print(len(finallist), "Knots")
@@ -45,23 +54,11 @@ def main():
 if __name__ == "__main__":
     main()
 
+# performflype() manual testing
 
-
-    #flypes = Knot.flypedetect(Knot(permutation))
-    #flypeclass = []
-    #for flype in flypes:
-          #newcode = Knot.performflype(Knot(permutation), flype)
-          #flypeclass.append(newcode)
-    #print(permutation, "... CODES:", flypeclass, "\n\n")
-
-
-
-# at 8 crossings, there are 17 non prime knots included atm
-
-#Find order 1 flype permutations from given permutation, then see if self contained, keep going
-#Check only the permutations that are not self contained
-#Check each "tree" from each dowker code
-#Use sorting algorithm to determine lexographically minimal code
-#Eliminate self contained list of flypes from permutatiohs, add lexographically minimal code to a list (Final list)
-
-#### More testing ####
+# flypes = Knot.flypedetect(Knot(permutation))
+# flypeclass = []
+# for flype in flypes:
+     # newcode = Knot.performflype(Knot(permutation), flype)
+     # flypeclass.append(newcode)
+# print(permutation, "... CODES:", flypeclass, "\n\n")
