@@ -1,3 +1,4 @@
+import itertools
 import numpy as np
 import networkx as net
 import matplotlib.pyplot as plt
@@ -634,3 +635,22 @@ class Knot:
                          checked = Knot.findflypeclass(Knot(code), checked)
                return checked
           
+def gendowkers(crossings):   #Generates all the possible dowker codes with up to n crossings
+     numbers = []           #Used as a list of even numbers in dowker code up to n crossings
+     #permut = []              #Used for all permutations of even numbers
+     permutneg = []           #Used for all permutations of even numbers w signs included
+     for x in range(crossings):         #Iterates through each # of crossings
+          number = 2 * (x + 1)               #Generates even number to add to list
+          numbers.append(number)                  #Appends even number to list of even #s
+          if x > 1:           #Excludes dowker codes with length less than 3
+               permutstor = list(itertools.permutations(numbers))          #Generates the permnutations using the list of even numbers for # of crossings
+               for i in range(len(permutstor)):
+                    permutneg.append(permutstor[i])            #Adds to list of permutations of each # of crossings
+     for y in range(len(permutneg)):
+          permutneg[y] = list(permutneg[y])
+     #for dowkers in permut:             #Iterates over all dowker codes generated
+          #permutstor = []
+          #for num in dowkers:
+               #permutstor.append(num)             #Stores each dowker code in format for itertools.product            
+          #permutneg.append(list(itertools.product(*([y, -y] for y in permutstor))))            #Uses dot product to generate neg and positive permutations
+     return permutneg              #Returns list of permutations w signs included
