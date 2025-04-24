@@ -23,14 +23,12 @@ def main():
      permutations = Knot(permutations).zeroremove() # remove all zeroed permutations
 
      finallist = []
-     flypes = []
 
      # criteria 4: checks if the dowker code is minimal with respect to flyping
      for permutation in permutations:
           if permutation in permutations:
                flypeclass = Knot.findflypeclass(Knot(permutation), [permutation]) 
                permutations = [perm for perm in permutations if perm not in flypeclass] 
-               lexographic = []
                for x in range(len(permutation)):
                     integers = []
                     for flype in flypeclass:
