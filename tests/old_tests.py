@@ -1,5 +1,5 @@
-from knot import Knot, genDowkers
-from alternating_knot import AlternatingKnot
+from knottery.knot.knot import Knot, genDowkers
+from knottery.knot.alternating_knot import AlternatingKnot
 
 trefoil = AlternatingKnot([6, -10, 12, 4, -8, 2, 14])
 square = AlternatingKnot([6, 8, 2, 4])
