@@ -1,4 +1,4 @@
-from knottery.knot.knot import Knot
+from knot.knot import Knot
 import numpy as np
 import networkx as net
 

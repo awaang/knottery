@@ -1,7 +1,7 @@
-from knottery.knot.knot import Knot, genDowkers
+from knot.knot import Knot, genDowkers
 import unittest
 # from knot import AlternatingKnot
-from knottery.knot.alternating_knot import AlternatingKnot
+from knot.alternating_knot import AlternatingKnot
 
 
 trefoil = AlternatingKnot([4, 6, 2]) # 3_1

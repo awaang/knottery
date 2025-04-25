@@ -1,4 +1,4 @@
-from knottery.knot.knot import Knot
+from knot.knot import Knot
 
 class NonAlternatingKnot(Knot):
     def isLexographic(self):
