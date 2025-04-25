@@ -1,6 +1,5 @@
 from knot.knot import Knot, genDowkers
 import unittest
-# from knot import AlternatingKnot
 from knot.alternating_knot import AlternatingKnot
 
 
