@@ -4,7 +4,6 @@ import networkx as net
 
 class AlternatingKnot(Knot):
     # checks if dowker code is lexicographically minimal
-    # difference of numbers in 
     def isLexographic(self):
         start = self.dowker[0] - 1    #Stores the difference of the first crossing numbers
         if start > len(self.dowker):        #If reversing traversal direction would make a smaller diff, return False
@@ -59,40 +58,40 @@ class AlternatingKnot(Knot):
             for y in range(len(self.dowker) - 1):             #Looking at the string up to y away from number dictated by x
                 number = x + y + 1            #Numbers in sequence 1
                 if number > 2 * len(self.dowker):            #If number is greater than largest number in dowker code, wraps back around
-                        number = number - 2 * len(self.dowker)
+                    number = number - 2 * len(self.dowker)
                 sequence1.append(number)           #Adds number to sequence1
                 if (number) % 2 == 0: #If sequence1 element is even
-                        index = self.dowker.index(number)            #Finds index of number in sequence1 in dowker code
-                        sequence2.append(2 * index + 1)              #Adds corresponding odd number to sequence2
+                    index = self.dowker.index(number)            #Finds index of number in sequence1 in dowker code
+                    sequence2.append(2 * index + 1)              #Adds corresponding odd number to sequence2
                 else:               #If sequence1 element is odd
-                        even = self.dowker[int((number - 1)/2)]      #Finds corresponding even number of odd # in sequence1 in dowker code
-                        sequence2.append(even)             #Adds corresponding even number to sequence2
+                    even = self.dowker[int((number - 1)/2)]      #Finds corresponding even number of odd # in sequence1 in dowker code
+                    sequence2.append(even)             #Adds corresponding even number to sequence2
                 if y > 0:           #Begins checking consecutiveness of sequence2 if length of it greater than equal to 2
-                        latest = sequence2[len(sequence2) - 1]              #Stores most recently added element to sequence
-                        sequence2.sort()              #Sorts the second sequence to find start and end of it
-                        start = sequence2[0]           #Stores smallest number in subsequence
-                        for z in range(len(sequence2)):               #Iterates through subsequence
-                            if start + z not in sequence2:           #Checks if each consecutive number is in not subsequence
-                                consecutive = False
-                        if consecutive == False:
-                            sequence1.pop()          #Avoids flypes changing when sequence changes
-                            sequence2.remove(latest)             #Avoids flypes changing when sequence changes
-                            break               #Rest of sequence2 wont be consecutive if this part isnt
-                        else:               #If consecutive, finds crossings around tangle, then appends to flypes appropriately
-                            flag, crossing = AlternatingKnot.flypecrossing(self, sequence1[0] - 1, sequence1, sequence2)         #Finds a crossing before start of first sequence
-                            flypes.append(AlternatingKnot.flypeappendage(flag, flypes, crossing, sequence1, sequence2))          #Appends tangle and crossing if possible flype
-                            flag, crossing = AlternatingKnot.flypecrossing(self, sequence2[0] - 1, sequence1, sequence2)         #Finds a crossing before start of second sequence
-                            flypes.append(AlternatingKnot.flypeappendage(flag, flypes, crossing, sequence1, sequence2))               
-                            flag, crossing = AlternatingKnot.flypecrossing(self, sequence1[len(sequence1) - 1] + 1, sequence1, sequence2)            #Finds a crossing after end of first sequence
-                            flypes.append(AlternatingKnot.flypeappendage(flag, flypes, crossing, sequence1, sequence2))
-                            flag, crossing = AlternatingKnot.flypecrossing(self, sequence2[len(sequence2) - 1] + 1, sequence1, sequence2)            #Finds a crossing after end of second sequence
-                            flypes.append(AlternatingKnot.flypeappendage(flag, flypes, crossing, sequence1, sequence2))
-                            flypes = Knot.listremove(flypes)             #Removes all lists added through flypeappendage()
+                    latest = sequence2[len(sequence2) - 1]              #Stores most recently added element to sequence
+                    sequence2.sort()              #Sorts the second sequence to find start and end of it
+                    start = sequence2[0]           #Stores smallest number in subsequence
+                    for z in range(len(sequence2)):               #Iterates through subsequence
+                        if start + z not in sequence2:           #Checks if each consecutive number is in not subsequence
+                            consecutive = False
+                    if consecutive == False:
+                        sequence1.pop()          #Avoids flypes changing when sequence changes
+                        sequence2.remove(latest)             #Avoids flypes changing when sequence changes
+                        break               #Rest of sequence2 wont be consecutive if this part isnt
+                    else:               #If consecutive, finds crossings around tangle, then appends to flypes appropriately
+                        flag, crossing = AlternatingKnot.flypecrossing(self, sequence1[0] - 1, sequence1, sequence2)         #Finds a crossing before start of first sequence
+                        flypes.append(AlternatingKnot.flypeappendage(flag, flypes, crossing, sequence1, sequence2))          #Appends tangle and crossing if possible flype
+                        flag, crossing = AlternatingKnot.flypecrossing(self, sequence2[0] - 1, sequence1, sequence2)         #Finds a crossing before start of second sequence
+                        flypes.append(AlternatingKnot.flypeappendage(flag, flypes, crossing, sequence1, sequence2))               
+                        flag, crossing = AlternatingKnot.flypecrossing(self, sequence1[len(sequence1) - 1] + 1, sequence1, sequence2)            #Finds a crossing after end of first sequence
+                        flypes.append(AlternatingKnot.flypeappendage(flag, flypes, crossing, sequence1, sequence2))
+                        flag, crossing = AlternatingKnot.flypecrossing(self, sequence2[len(sequence2) - 1] + 1, sequence1, sequence2)            #Finds a crossing after end of second sequence
+                        flypes.append(AlternatingKnot.flypeappendage(flag, flypes, crossing, sequence1, sequence2))
+                        flypes = Knot.listremove(flypes)             #Removes all lists added through flypeappendage()
         for i in range(len(flypes)):             #Removes the case of crossing for flype detected inside tangle
             if flypes[i][2] in flypes[i][0] or flypes[i][2] in flypes[i][1]:
-                        flypes[i] = 0
+                flypes[i] = 0
             elif len(flypes[i][0]) == len(self.dowker) - 1:
-                        flypes[i] = 0
+                flypes[i] = 0
         flypes = Knot(flypes).zeroremove()            #For formatting
         return flypes
     

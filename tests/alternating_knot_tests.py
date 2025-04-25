@@ -2,7 +2,6 @@ from knot.knot import Knot, genDowkers
 import unittest
 from knot.alternating_knot import AlternatingKnot
 
-
 trefoil = AlternatingKnot([4, 6, 2]) # 3_1
 figure_eight = AlternatingKnot([4, 6, 8, 2]) # 4_1
 cinquefoil = AlternatingKnot([6, 8, 10, 2, 4]) # 5_1
@@ -43,7 +42,9 @@ class TestKnotProperties(unittest.TestCase):
             (AlternatingKnot([4, 8, 6, 2]), False),
             (AlternatingKnot([2, 8, 6, 4]), False),
             (AlternatingKnot([6, 4, 2, 8]), False),
-            (AlternatingKnot([6, 8, 10, 2, 4, 12]), False),   
+            (AlternatingKnot([6, 8, 10, 2, 4, 12]), False),  
+
+            (AlternatingKnot([4, 6, 2, 10, 12, 8]), False), 
         ]
 
         for knot, expected in cases:
@@ -51,7 +52,7 @@ class TestKnotProperties(unittest.TestCase):
             print(f"\n> Dowker: {knot} \n> Expected: {expected}\n> Returned: {result}")
             self.assertEqual(result, expected, f"{knot} expected {expected} but got {result}")
 
-        print(f"\n------------ PASS ------------------------------------------------------------")
+        # print(f"\n------------ PASS ------------------------------------------------------------")
 
     def test_isPossible(self):
         print(f"\n\n------------ Testing isPossible() --------------------------------------------")
@@ -61,12 +62,10 @@ class TestKnotProperties(unittest.TestCase):
             (cinquefoil, True),
             (three_twist, True),
             (stevedore, True),
-            # (AlternatingKnot([10, 8, 6, 4]), True),  # THIS TEST FAILS
 
             (AlternatingKnot([2, 4, 6, 2]), False),
             (AlternatingKnot([4, 6, 8, 10]), False),
             (AlternatingKnot([4, 8, 2, 10, 6]), False),
-            
         ]
 
         for knot, expected in cases:
