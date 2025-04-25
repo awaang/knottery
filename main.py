@@ -1,6 +1,6 @@
-from knottery.knot.knot import genDowkers
-from knottery.knot.alternating_knot import AlternatingKnot
-from knottery.knot.non_alternating_knot import NonAlternatingKnot
+from knot.knot import genDowkers
+from knot.alternating_knot import AlternatingKnot
+from knot.non_alternating_knot import NonAlternatingKnot
 
 # Notes:
 # - Find order 1 flype permutations from given permutation, then see if self contained, keep going
