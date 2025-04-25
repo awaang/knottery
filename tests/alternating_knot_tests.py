@@ -11,13 +11,17 @@ stevedore = AlternatingKnot([4, 8, 12, 10, 2, 6]) # 6_1
 
 class TestKnotProperties(unittest.TestCase):
     def test_isLexographic(self):
-        print(f"\n\nTesting isLexographic()")
+        print(f"\n\n------------ Testing isLexographic() -----------------------------------------")
         cases = [
             (trefoil, True),
             (figure_eight, True),
             (cinquefoil, True),
             (three_twist, True),
             (stevedore, True),
+            
+            (AlternatingKnot([6, 8, 2, 4]), False),
+            (AlternatingKnot([8, 6, 2, 4]), False),
+            (AlternatingKnot([8, 10, 12, 4, 6, 2]), False),
         ]
 
         for knot, expected in cases:
@@ -25,19 +29,21 @@ class TestKnotProperties(unittest.TestCase):
             print(f"\n> Dowker: {knot} \n> Expected: {expected}\n> Returned: {result}")
             self.assertEqual(result, expected, f"{knot} expected {expected} but got {result}")
 
+        print(f"\n------------ PASS ------------------------------------------------------------")
+
     def test_isPrime(self):
-        print(f"\n\nTesting isPrime()")
+        print(f"\n\n------------ Testing isPrime() -----------------------------------------------")
         cases = [
             (trefoil, True),
             (figure_eight, True),
             (cinquefoil, True),
             (three_twist, True),
             (stevedore, True),
-            
-            # (AlternatingKnot([6, 8, 10, 2, 4, 12]), False), # 3_1 # 3_1 - composite
-            # (AlternatingKnot([6, 8, 2, 4]), False), # 3_1 # 3_1* - composite
-            # (AlternatingKnot([10, 12, 14, 16, 2, 4, 6, 8]), False), # 3_1 # 4_1 - composite
-            
+
+            (AlternatingKnot([4, 8, 6, 2]), False),
+            (AlternatingKnot([2, 8, 6, 4]), False),
+            (AlternatingKnot([6, 4, 2, 8]), False),
+            (AlternatingKnot([6, 8, 10, 2, 4, 12]), False),   
         ]
 
         for knot, expected in cases:
@@ -45,8 +51,10 @@ class TestKnotProperties(unittest.TestCase):
             print(f"\n> Dowker: {knot} \n> Expected: {expected}\n> Returned: {result}")
             self.assertEqual(result, expected, f"{knot} expected {expected} but got {result}")
 
+        print(f"\n------------ PASS ------------------------------------------------------------")
+
     def test_isPossible(self):
-        print(f"\n\nTesting isPossible()")
+        print(f"\n\n------------ Testing isPossible() --------------------------------------------")
         cases = [
             (trefoil, True),
             (figure_eight, True),
@@ -55,14 +63,18 @@ class TestKnotProperties(unittest.TestCase):
             (stevedore, True),
             # (AlternatingKnot([10, 8, 6, 4]), True),  # THIS TEST FAILS
 
-            (AlternatingKnot([2, 4, 6, 2]), False),  # Invalid: repeated number
-            (AlternatingKnot([4, 6, 8, 10]), False), # Invalid: not a Dowker code
+            (AlternatingKnot([2, 4, 6, 2]), False),
+            (AlternatingKnot([4, 6, 8, 10]), False),
+            (AlternatingKnot([4, 8, 2, 10, 6]), False),
+            
         ]
 
         for knot, expected in cases:
             result = knot.isPossible()
             print(f"\n> Dowker: {knot} \n> Expected: {expected}\n> Returned: {result}")
             self.assertEqual(result, expected, f"{knot} expected {expected} but got {result}")
+
+        print(f"\n------------ PASS ------------------------------------------------------------")
 
 if __name__ == '__main__':
     unittest.main()

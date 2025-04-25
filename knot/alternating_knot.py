@@ -4,6 +4,7 @@ import networkx as net
 
 class AlternatingKnot(Knot):
     # checks if dowker code is lexicographically minimal
+    # difference of numbers in 
     def isLexographic(self):
         start = self.dowker[0] - 1    #Stores the difference of the first crossing numbers
         if start > len(self.dowker):        #If reversing traversal direction would make a smaller diff, return False
@@ -30,11 +31,11 @@ class AlternatingKnot(Knot):
                 #print(sequence)
                 start = sequence[0]           #Stores smallest number in subsequence
                 for z in range(len(sequence)):               #Iterates through subsequence
-                        if start + z not in sequence:           #Checks if each consecutive number is in not subsequence
-                            consecutive = False           #Flags for non consecutive subsequences
+                    if start + z not in sequence:           #Checks if each consecutive number is in not subsequence
+                        consecutive = False           #Flags for non consecutive subsequences
                 #print("Start:", start)
                 if consecutive == True and len(sequence) != len(self.dowker) * 2:               #If consecutive subsequence that is not entire dowker code, return composite
-                        return False
+                    return False
             sequence = []            #Resets subsequence for next index in dowker code
         return True               #If no consecutive subsequences found, return prime
     
