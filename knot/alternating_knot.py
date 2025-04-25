@@ -38,6 +38,31 @@ class AlternatingKnot(Knot):
             sequence = []            #Resets subsequence for next index in dowker code
         return True               #If no consecutive subsequences found, return prime
     
+    # unused function
+    def isComposite(self):
+        n = len(self.dowker)
+
+        for cut in range(2, n, 2):  # try splitting between cut and n-cut crossings
+            block1_vals = set(range(2, 2 * cut + 2, 2))
+            block2_vals = set(range(2 * cut + 2, 2 * n + 2, 2))
+
+            # Check if the code can be split into two clean blocks
+            block1 = []
+            block2 = []
+            for i, val in enumerate(self.dowker):
+                if val in block1_vals and (2 * i + 2) in block1_vals:
+                    block1.append(val)
+                elif val in block2_vals and (2 * i + 2) in block2_vals:
+                    block2.append(val)
+                else:
+                    break  # Crossing links outside its own block
+            else:
+                if len(block1) > 0 and len(block2) > 0:
+                    print("block1:", block1)
+                    print("block2:", block2)
+                    return True  # Found a valid decomposition
+        return False
+
     # checks if dowker code is possible
     def isPossible(self): 
         try:

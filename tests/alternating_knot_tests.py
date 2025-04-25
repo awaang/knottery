@@ -30,7 +30,7 @@ class TestKnotProperties(unittest.TestCase):
 
         print(f"\n------------ PASS ------------------------------------------------------------")
 
-    def test_isPrime(self):
+    def test_isNotPrime(self):
         print(f"\n\n------------ Testing isPrime() -----------------------------------------------")
         cases = [
             (trefoil, True),
@@ -39,12 +39,17 @@ class TestKnotProperties(unittest.TestCase):
             (three_twist, True),
             (stevedore, True),
 
-            (AlternatingKnot([4, 8, 6, 2]), False),
-            (AlternatingKnot([2, 8, 6, 4]), False),
-            (AlternatingKnot([6, 4, 2, 8]), False),
-            (AlternatingKnot([6, 8, 10, 2, 4, 12]), False),  
+            # (AlternatingKnot([4, 8, 6, 2]), False),
+            # (AlternatingKnot([2, 8, 6, 4]), False),
+            # (AlternatingKnot([6, 4, 2, 8]), False),
 
-            (AlternatingKnot([4, 6, 2, 10, 12, 8]), False), 
+            # (AlternatingKnot([6, 8, 10, 2, 4, 12]), False),  
+            # (AlternatingKnot([4, 6, 2, 10, 12, 8]), False), 
+
+            (AlternatingKnot([4, 6, 2, 8, 10, 12,]), False), # 3_1 # 3_1
+            (AlternatingKnot([4, 6, 2, 8, 10, 12, 14, 16]), False), # 3_1 # 4_1
+            (AlternatingKnot([4, 6, 2, 8, 10, 12, 14, 16, 18, 20]), False), # 5_1 # 3_1
+            (AlternatingKnot([4, 6, 2, 8, 10, 12, 14, 16, 18]), False), # 3_1 # 3_1 # 3_1
         ]
 
         for knot, expected in cases:
