@@ -87,7 +87,7 @@ class Knot:
      def typeIII(self):
           self.dowker = Knot.typeII(Knot(self.dowker))           #Performs type I, II moves to simplify knot first
           self.dowker = Knot.typeI(Knot(self.dowker))
-          self.dowker = Knot.zeroremove(Knot(self.dowker))
+          self.dowker = Knot.zero_remove(Knot(self.dowker))
           for x in range(len(self.dowker)):            #Primary iteration through knot
                even_x = np.abs(self.dowker[x])               #Stores primary even # magnitude
                odd_x = 2 * x + 1              #Stores primary odd #
@@ -97,9 +97,9 @@ class Knot:
                     for z in range(len(self.dowker)):            #Tertiary iteration through knot
                          even_z = np.abs(self.dowker[z])               #Stores tertiary even # magnitude
                          odd_z = 2 * z + 1              #Stores tertiary odd #
-                         flag, dir = Knot.typeIIIflag(odd_x, odd_y, odd_z, self.dowker[x], self.dowker[y], self.dowker[z])             #Checks for type III criterion
-                         if flag and Knot.typeIIIindex(even_x, even_y, even_z):              #Handles 0s and same indexes on iterations
-                              lenbf = len(Knot.zeroremove(Knot(self.dowker)))             #Checks length of code with 0s removed
+                         flag, dir = Knot.typeIII_flag(odd_x, odd_y, odd_z, self.dowker[x], self.dowker[y], self.dowker[z])             #Checks for type III criterion
+                         if flag and Knot.typeIII_index(even_x, even_y, even_z):              #Handles 0s and same indexes on iterations
+                              lenbf = len(Knot.zero_remove(Knot(self.dowker)))             #Checks length of code with 0s removed
                               dowkerIII = []
                               for i in range(len(self.dowker)):
                                    dowkerIII.append(self.dowker[i])
@@ -119,7 +119,7 @@ class Knot:
                                    dowkerIII[z] = self.dowker[x]
                               #print("Final III:", dowkerIII)
                               #print("x:", x, "y:", y, "z:", z)
-                              dowkerIII = Knot.typeIIIsigns(x, y, z, dowkerIII)           #Handles sign swapping for type III
+                              dowkerIII = Knot.typeIII_signs(x, y, z, dowkerIII)           #Handles sign swapping for type III
                               #print("signs:", dowkerIII)
                               dowkerIII = Knot.typeII(Knot(dowkerIII))               #Performs types I and II on knot after type III
                               #print("II:", dowkerIII)
@@ -128,13 +128,13 @@ class Knot:
                               dowker_store = []
                               for i in range(len(dowkerIII)):
                                    dowker_store.append(dowkerIII[i])
-                              dowkerIII = Knot.zeroremove(Knot(dowkerIII))           #Removes zeroes from code after type I, II move
-                              lenaf = len(Knot.zeroremove(Knot(dowkerIII)))               #Checks if type III move resulted in more opportunities for type II, II
+                              dowkerIII = Knot.zero_remove(Knot(dowkerIII))           #Removes zeroes from code after type I, II move
+                              lenaf = len(Knot.zero_remove(Knot(dowkerIII)))               #Checks if type III move resulted in more opportunities for type II, II
                               if lenaf < lenbf:             #If type III move resulted in more opportunities, assign new code to self.dowker
                                    self.dowker = dowker_store
           return self.dowker
 
-     def typeIIIflag(odd_x, odd_y, odd_z, even_x, even_y, even_z):
+     def typeIII_flag(odd_x, odd_y, odd_z, even_x, even_y, even_z):
           dir = True  # direction flag for how to rotate the three crossings
 
           # take absolute values of even parts for comparison
@@ -167,7 +167,7 @@ class Knot:
           else:
                return False, dir  # all crossings have the same sign, invalid
               
-     def typeIIIindex(even_x, even_y, even_z): # handles same iteration indexes and zeroes
+     def typeIII_index(even_x, even_y, even_z): # handles same iteration indexes and zeroes
           # ensure all three crossings are at distinct indices
           if even_x != even_y and even_y != even_z and even_z != even_x:
                # ensure none of the crossings are removed (i.e., not zeroed)
@@ -175,7 +175,7 @@ class Knot:
                     return True
           return False
      
-     def typeIIIsigns(x, y, z, dowker): # handles swapping of signs
+     def typeIII_signs(x, y, z, dowker): # handles swapping of signs
                #print(dowker[x], dowker[y], dowker[z])
                if dowker[x] * dowker[y] < 0:           #If x, y diff sign, then opposite z crossing sign
                     dowker[z] = dowker[z] * -1
@@ -216,15 +216,15 @@ class Knot:
           det = int(np.abs(det))    
           return det
     
-     def listremove(lst):
+     def list_remove(lst):
           lst = [n for n in lst if len(n) != 0]
           return lst
     
-     def zeroremove(self):               #Removes 0s from dowker codes
+     def zero_remove(self):               #Removes 0s from dowker codes
          self.dowker = [n for n in self.dowker if n != 0]
          return self.dowker
     
-     def signflip(self):       #Used when all crossings on knot are negative
+     def sign_flip(self):       #Used when all crossings on knot are negative
           flip = True
           for n in range(len(self.dowker)):
                if self.dowker[n] > 0:
@@ -234,7 +234,7 @@ class Knot:
                     self.dowker[n] = self.dowker[n] * -1
           return self.dowker
 
-     def graphifydowker(self):
+     def graphify_dowker(self):
           G = net.Graph()
           crossings = len(self.dowker) # # of crossings for indexing
           for x in range(4 * crossings):
@@ -268,7 +268,7 @@ class Knot:
                G.add_edge(node1, node2)            #Handles even to odd edges of dowker code
           return G
 
-     def dowkerifygraph(self, G):
+     def dowkerify_graph(self, G):
           node = 4
           dowker = []
           dowkeroddindex = []

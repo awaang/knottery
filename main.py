@@ -22,14 +22,14 @@ def gen_alternating_knots():
           elif AlternatingKnot(permutations[i]).is_possible() == False: # criteria 3: checks if the dowker code is possible
                permutations[i] = 0
      
-     permutations = AlternatingKnot(permutations).zeroremove() # remove all zeroed permutations
+     permutations = AlternatingKnot(permutations).zero_remove() # remove all zeroed permutations
 
      finallist = []
 
      # criteria 4: checks if the dowker code is minimal with respect to flyping
      for permutation in permutations:
           if permutation in permutations:
-               flypeclass = AlternatingKnot.findflypeclass(AlternatingKnot(permutation), [permutation]) 
+               flypeclass = AlternatingKnot.find_flype_class(AlternatingKnot(permutation), [permutation]) 
                permutations = [perm for perm in permutations if perm not in flypeclass] # removes all permutations that are in the flypeclass
 
                for x in range(len(permutation)):
@@ -45,7 +45,7 @@ def gen_alternating_knots():
                               if integers[y] != minimum:
                                    flypeclass[y] = 0
 
-               finallist.append(AlternatingKnot.zeroremove(AlternatingKnot(flypeclass))[0]) # append the lexographically minimal code of its flype class to the final list
+               finallist.append(AlternatingKnot.zero_remove(AlternatingKnot(flypeclass))[0]) # append the lexographically minimal code of its flype class to the final list
      
      finallist = [x for n, x in enumerate(finallist) if x not in finallist[:n]] # removes duplicates
 

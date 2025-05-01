@@ -66,14 +66,14 @@ class AlternatingKnot(Knot):
     # checks if dowker code is possible
     def is_possible(self): 
         try:
-            G = Knot.graphifydowker(self)
+            G = Knot.graphify_dowker(self)
             var = net.is_planar(G) # planarity check
             return var
         except Exception as e:
             return False
     
     # detects all order-1 flypes (flypable tangles) in the knot, returning data structures to describe the sequences involved and the crossing location.
-    def flypedetect(self):
+    def flype_detect(self):
         flypes = []
         dowker = self.dowker
         for x in range(2 * len(self.dowker)):              #Iterates through each number in dowker code
@@ -103,24 +103,24 @@ class AlternatingKnot(Knot):
                         sequence2.remove(latest)             #Avoids flypes changing when sequence changes
                         break               #Rest of sequence2 wont be consecutive if this part isnt
                     else:               #If consecutive, finds crossings around tangle, then appends to flypes appropriately
-                        flag, crossing = AlternatingKnot.flypecrossing(self, sequence1[0] - 1, sequence1, sequence2)         #Finds a crossing before start of first sequence
-                        flypes.append(AlternatingKnot.flypeappendage(flag, flypes, crossing, sequence1, sequence2))          #Appends tangle and crossing if possible flype
-                        flag, crossing = AlternatingKnot.flypecrossing(self, sequence2[0] - 1, sequence1, sequence2)         #Finds a crossing before start of second sequence
-                        flypes.append(AlternatingKnot.flypeappendage(flag, flypes, crossing, sequence1, sequence2))               
-                        flag, crossing = AlternatingKnot.flypecrossing(self, sequence1[len(sequence1) - 1] + 1, sequence1, sequence2)            #Finds a crossing after end of first sequence
-                        flypes.append(AlternatingKnot.flypeappendage(flag, flypes, crossing, sequence1, sequence2))
-                        flag, crossing = AlternatingKnot.flypecrossing(self, sequence2[len(sequence2) - 1] + 1, sequence1, sequence2)            #Finds a crossing after end of second sequence
-                        flypes.append(AlternatingKnot.flypeappendage(flag, flypes, crossing, sequence1, sequence2))
-                        flypes = Knot.listremove(flypes)             #Removes all lists added through flypeappendage()
+                        flag, crossing = AlternatingKnot.flype_crossing(self, sequence1[0] - 1, sequence1, sequence2)         #Finds a crossing before start of first sequence
+                        flypes.append(AlternatingKnot.flype_appendage(flag, flypes, crossing, sequence1, sequence2))          #Appends tangle and crossing if possible flype
+                        flag, crossing = AlternatingKnot.flype_crossing(self, sequence2[0] - 1, sequence1, sequence2)         #Finds a crossing before start of second sequence
+                        flypes.append(AlternatingKnot.flype_appendage(flag, flypes, crossing, sequence1, sequence2))               
+                        flag, crossing = AlternatingKnot.flype_crossing(self, sequence1[len(sequence1) - 1] + 1, sequence1, sequence2)            #Finds a crossing after end of first sequence
+                        flypes.append(AlternatingKnot.flype_appendage(flag, flypes, crossing, sequence1, sequence2))
+                        flag, crossing = AlternatingKnot.flype_crossing(self, sequence2[len(sequence2) - 1] + 1, sequence1, sequence2)            #Finds a crossing after end of second sequence
+                        flypes.append(AlternatingKnot.flype_appendage(flag, flypes, crossing, sequence1, sequence2))
+                        flypes = Knot.list_remove(flypes)             #Removes all lists added through flype_appendage()
         for i in range(len(flypes)):             #Removes the case of crossing for flype detected inside tangle
             if flypes[i][2] in flypes[i][0] or flypes[i][2] in flypes[i][1]:
                 flypes[i] = 0
             elif len(flypes[i][0]) == len(self.dowker) - 1:
                 flypes[i] = 0
-        flypes = Knot(flypes).zeroremove()            #For formatting
+        flypes = Knot(flypes).zero_remove()            #For formatting
         return flypes
     
-    def flypecrossing(self, x, sequence1, sequence2):
+    def flype_crossing(self, x, sequence1, sequence2):
         if x < 1:            #If crossing being checked is below 1, wraps to top of dowker code
             x = 2 * len(self.dowker) + x
         elif x >  2 * len(self.dowker):               #If crossing being checked above biggest # in dowker code, wraps back to 1
@@ -152,7 +152,7 @@ class AlternatingKnot(Knot):
             else:
                 return False, odd              #If no matches return false
 
-    def flypeappendage(flag, flypes, crossing, sequence1, sequence2):
+    def flype_appendage(flag, flypes, crossing, sequence1, sequence2):
         newflype = []            #Creates a list of a flype to add to list of flypes
         if flag == True:         #Checks if flype is to be added
             if len(flypes) == 0:               #Always adds flype if one to be added and none yet in list
@@ -160,8 +160,8 @@ class AlternatingKnot(Knot):
                 newflype.append(sequence2)
                 newflype.append(crossing)
             else:
-                flypes = Knot.listremove(flypes)
-                for flype in flypes:            #Avoids adding two duplicate flypes to list when x and y indices are flipped in flypedetect()
+                flypes = Knot.list_remove(flypes)
+                for flype in flypes:            #Avoids adding two duplicate flypes to list when x and y indices are flipped in flype_detect()
                         if sequence1 == flype[0] or sequence1 == flype[1]:
                             if sequence2 ==flype[0] or sequence2 == flype[1]:
                                 if crossing == flype[2]:
@@ -171,7 +171,7 @@ class AlternatingKnot(Knot):
                 newflype.append(crossing)
         return newflype     
 
-    def flypelexographic(self, flypeddowker, permutations):
+    def flype_lexographic(self, flypeddowker, permutations):
         if flypeddowker in permutations and self.dowker != flypeddowker:
             for i in range(len(flypeddowker)):
                 if self.dowker[i] > flypeddowker[i]:
@@ -184,7 +184,7 @@ class AlternatingKnot(Knot):
                         return permutations
         return permutations
 
-    def makelexographic(self):
+    def make_lexographic(self):
         predowker = self.dowker
         distances = []
         dowker = []
@@ -228,9 +228,9 @@ class AlternatingKnot(Knot):
             dowker.append(even)
         return dowker
 
-    def performflype(self, flype):
+    def perform_flype(self, flype):
         startingdowker = self.dowker
-        G = Knot.graphifydowker(self)
+        G = Knot.graphify_dowker(self)
         #net.draw(G, with_labels = True)
         #plt.show()
         tangleedgeedit = []
@@ -242,14 +242,14 @@ class AlternatingKnot(Knot):
         crossingodd = flype[2]
         indexodd = int((crossingodd - 1)/2)
         crossingeven = self.dowker[indexodd]
-        tangleedgeedit.append(AlternatingKnot.edgeidentification(self, sequence1min, False))
-        tangleedgeedit.append(AlternatingKnot.edgeidentification(self, sequence2min, False))
-        tangleedgeedit.append(AlternatingKnot.edgeidentification(self, sequence1max, True))
-        tangleedgeedit.append(AlternatingKnot.edgeidentification(self, sequence2max, True))
-        crossingedgeedit.append(AlternatingKnot.edgeidentification(self, crossingodd, True))
-        crossingedgeedit.append(AlternatingKnot.edgeidentification(self, crossingodd, False))
-        crossingedgeedit.append(AlternatingKnot.edgeidentification(self, crossingeven, True))
-        crossingedgeedit.append(AlternatingKnot.edgeidentification(self, crossingeven, False))
+        tangleedgeedit.append(AlternatingKnot.edge_identification(self, sequence1min, False))
+        tangleedgeedit.append(AlternatingKnot.edge_identification(self, sequence2min, False))
+        tangleedgeedit.append(AlternatingKnot.edge_identification(self, sequence1max, True))
+        tangleedgeedit.append(AlternatingKnot.edge_identification(self, sequence2max, True))
+        crossingedgeedit.append(AlternatingKnot.edge_identification(self, crossingodd, True))
+        crossingedgeedit.append(AlternatingKnot.edge_identification(self, crossingodd, False))
+        crossingedgeedit.append(AlternatingKnot.edge_identification(self, crossingeven, True))
+        crossingedgeedit.append(AlternatingKnot.edge_identification(self, crossingeven, False))
         for edgecross in crossingedgeedit:
             for edgetang in tangleedgeedit:
                 if edgetang == 0 or edgecross == 0:
@@ -259,8 +259,8 @@ class AlternatingKnot(Knot):
                         crossingedgeedit[index] = 0
                         index = tangleedgeedit.index(edgetang)
                         tangleedgeedit[index] = 0
-        crossingedgeedit = Knot(crossingedgeedit).zeroremove()
-        tangleedgeedit = Knot(tangleedgeedit).zeroremove()
+        crossingedgeedit = Knot(crossingedgeedit).zero_remove()
+        tangleedgeedit = Knot(tangleedgeedit).zero_remove()
         for edge in tangleedgeedit:
                 edgetuple = (edge[0], edge[1])
                 if edgetuple in G.edges and edge not in crossingedgeedit:
@@ -295,11 +295,11 @@ class AlternatingKnot(Knot):
                 G.add_edge(tangleedgeedit[1][0], crossingedgeedit[1][1])
         #net.draw(G, with_labels = True)
         #plt.show()
-        dowker = Knot.dowkerifygraph(self, G)
-        dowker = AlternatingKnot.makelexographic(Knot(dowker))
+        dowker = Knot.dowkerify_graph(self, G)
+        dowker = AlternatingKnot.make_lexographic(Knot(dowker))
         return dowker   
 
-    def edgeidentification(self, number, max):
+    def edge_identification(self, number, max):
         edge = []
         if number % 2 == 0: 
             index = self.dowker.index(number)
@@ -339,15 +339,15 @@ class AlternatingKnot(Knot):
                 edge.append(node2)
         return edge
 
-    def findflypeclass(self, oldcheckedcodes):
-        flypes = AlternatingKnot.flypedetect(self)
+    def find_flype_class(self, oldcheckedcodes):
+        flypes = AlternatingKnot.flype_detect(self)
         checked = []
         checked = checked + oldcheckedcodes
         checked.append(self.dowker)
         checked = [x for n,x in enumerate(checked) if x not in checked[:n]]
         codesfromflypes = []
         for flype in flypes:
-            newcode = AlternatingKnot.performflype(self, flype)
+            newcode = AlternatingKnot.perform_flype(self, flype)
             codesfromflypes.append(newcode)
         codesfromflypes = [x for n,x in enumerate(codesfromflypes) if x not in codesfromflypes[:n]]
         comparison = checked + codesfromflypes
@@ -357,5 +357,5 @@ class AlternatingKnot(Knot):
         else:
             for code in codesfromflypes:
                 if code not in checked:
-                    checked = AlternatingKnot.findflypeclass(Knot(code), checked)
+                    checked = AlternatingKnot.find_flype_class(Knot(code), checked)
             return checked
