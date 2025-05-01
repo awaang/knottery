@@ -1,4 +1,4 @@
-from knot.knot import genDowkers
+from knot.knot import gen_dowkers
 from knot.alternating_knot import AlternatingKnot
 from knot.non_alternating_knot import NonAlternatingKnot
 
@@ -11,15 +11,15 @@ from knot.non_alternating_knot import NonAlternatingKnot
 
 # - at 8 crossings, there are 17 non prime knots included atm
 
-def genAlternatingKnots():
-     permutations = genDowkers(8)
+def gen_alternating_knots():
+     permutations = gen_dowkers(8)
      
      for i in range(len(permutations)):
-          if AlternatingKnot(permutations[i]).isLexographic() == False: # criteria 1: checks if the dowker code is lexographically minimal
+          if AlternatingKnot(permutations[i]).is_lexographic() == False: # criteria 1: checks if the dowker code is lexographically minimal
                permutations[i] = 0
-          elif AlternatingKnot(permutations[i]).isPrime() == False: # criteria 2: checks if the dowker code is prime
+          elif AlternatingKnot(permutations[i]).is_prime() == False: # criteria 2: checks if the dowker code is prime
                permutations[i] = 0 
-          elif AlternatingKnot(permutations[i]).isPossible() == False: # criteria 3: checks if the dowker code is possible
+          elif AlternatingKnot(permutations[i]).is_possible() == False: # criteria 3: checks if the dowker code is possible
                permutations[i] = 0
      
      permutations = AlternatingKnot(permutations).zeroremove() # remove all zeroed permutations
@@ -51,12 +51,12 @@ def genAlternatingKnots():
 
      return finallist
 
-def genNonAlternatingKnots():
+def gen_non_alternating_knots():
      return []
 
 def main():
-     AlternatingList = genAlternatingKnots()
-     NonAlternatingList = genNonAlternatingKnots()
+     AlternatingList = gen_alternating_knots()
+     NonAlternatingList = gen_non_alternating_knots()
 
      print("\nAlternating Knots:")
      for knot in AlternatingList:

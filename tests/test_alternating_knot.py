@@ -1,4 +1,4 @@
-from knot.knot import Knot, genDowkers
+from knot.knot import Knot, gen_dowkers
 from knot.alternating_knot import AlternatingKnot
 import pytest
 
@@ -21,7 +21,7 @@ stevedore = AlternatingKnot([4, 8, 12, 10, 2, 6])  # 6_1
 ])
 
 def test_is_lexographic(knot, expected):
-    result = knot.isLexographic()
+    result = knot.is_lexographic()
     print(f"\n> Dowker: {knot}")
     print(f"> Expected: {expected}")
     print(f"> Returned: {result}")
@@ -40,7 +40,7 @@ def test_is_lexographic(knot, expected):
 ])
 
 def test_is_prime(knot, expected):
-    result = knot.isPrime()
+    result = knot.is_prime()
     print(f"\n> Dowker: {knot}")
     print(f"> Expected: {expected}")
     print(f"> Returned: {result}")
@@ -58,7 +58,7 @@ def test_is_prime(knot, expected):
 ])
 
 def test_is_possible(knot, expected):
-    result = knot.isPossible()
+    result = knot.is_possible()
     print(f"\n> Dowker: {knot}")
     print(f"> Expected: {expected}")
     print(f"> Returned: {result}")

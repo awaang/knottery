@@ -4,7 +4,7 @@ import networkx as net
 
 class AlternatingKnot(Knot):
     # checks if dowker code is lexicographically minimal
-    def isLexographic(self):
+    def is_lexographic(self):
         start = self.dowker[0] - 1    #Stores the difference of the first crossing numbers
         if start > len(self.dowker):        #If reversing traversal direction would make a smaller diff, return False
             return False
@@ -17,7 +17,7 @@ class AlternatingKnot(Knot):
         return True               #Returns true if escaped all flagging
     
     # checks if dowker code is prime
-    def isPrime(self):
+    def is_prime(self):
         sequence = []             #List for consecutive subsequence that indicates composite knot
         for x in range(len(self.dowker)):             #Iterates thru dowker code
             for y in (range(len(self.dowker) - x)):           #At each index in dowker code, iterates through remainder of code
@@ -39,7 +39,7 @@ class AlternatingKnot(Knot):
         return True               #If no consecutive subsequences found, return prime
     
     # unused function
-    def isComposite(self):
+    def is_composite(self):
         n = len(self.dowker)
 
         for cut in range(2, n, 2):  # try splitting between cut and n-cut crossings
@@ -64,7 +64,7 @@ class AlternatingKnot(Knot):
         return False
 
     # checks if dowker code is possible
-    def isPossible(self): 
+    def is_possible(self): 
         try:
             G = Knot.graphifydowker(self)
             var = net.is_planar(G) # planarity check

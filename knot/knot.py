@@ -308,7 +308,7 @@ class Knot:
      def __str__(self):
           return f"{self.dowker}"
           
-def genDowkers(crossings):   #Generates all the possible dowker codes with up to n crossings
+def gen_dowkers(crossings):   #Generates all the possible dowker codes with up to n crossings
      numbers = []           #Used as a list of even numbers in dowker code up to n crossings
      #permut = []              #Used for all permutations of even numbers
      permutneg = []           #Used for all permutations of even numbers w signs included
