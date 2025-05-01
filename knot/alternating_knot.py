@@ -3,8 +3,13 @@ import numpy as np
 import networkx as net
 
 class AlternatingKnot(Knot):
-    # checks if dowker code is lexicographically minimal
     def is_lexographic(self):
+        """
+        Determines whether the current Dowker code is lexicographically minimal.
+
+        Returns:
+            bool: True if the Dowker code is lexographically minimal, False otherwise.
+        """
         n = len(self.dowker)
         start = self.dowker[0] - 1    #Stores the difference of the first crossing numbers
         if start > n:        #If reversing traversal direction would make a smaller diff, return False
@@ -17,8 +22,15 @@ class AlternatingKnot(Knot):
                 return False
         return True               #Returns true if escaped all flagging
     
-    # checks if dowker code is prime
     def is_prime(self):
+        """
+        Determines whether the knot is prime based on its Dowker code.
+
+        A composite knot will contain a nontrivial consecutive subsequence that does not span the full code.
+
+        Returns:
+            bool: True if the knot is prime, False if it's composite.
+        """
         n = len(self.dowker)
         sequence = []             #List for consecutive subsequence that indicates composite knot
         for x in range(n):             #Iterates thru dowker code
@@ -42,6 +54,13 @@ class AlternatingKnot(Knot):
     
     # unused function
     def is_composite(self):
+        """
+        Heuristic check to determine if the Dowker code can be partitioned 
+        into two non-interacting crossing blocks (suggesting a composite knot).
+
+        Returns:
+            bool: True if a decomposition into two blocks is found, False otherwise.
+        """
         n = len(self.dowker)
 
         for cut in range(2, n, 2):  # try splitting between cut and n-cut crossings
@@ -65,8 +84,15 @@ class AlternatingKnot(Knot):
                     return True  # Found a valid decomposition
         return False
 
-    # checks if dowker code is possible
     def is_possible(self): 
+        """
+        Checks whether the Dowker code represents a planar knot diagram.
+
+        Uses NetworkX's planarity check on the constructed knot graph.
+
+        Returns:
+            bool: True if the Dowker code corresponds to a planar graph, False otherwise.
+        """
         try:
             G = Knot.graphify_dowker(self)
             var = net.is_planar(G) # planarity check
@@ -74,8 +100,17 @@ class AlternatingKnot(Knot):
         except Exception as e:
             return False
     
-    # detects all order-1 flypes (flypable tangles) in the knot, returning data structures to describe the sequences involved and the crossing location.
     def flype_detect(self):
+        """
+        Detects all valid order-1 flypes in the current knot.
+
+        Iterates over all potential tangle regions and finds sequences 
+        where flypes can be applied, returning the corresponding tangle 
+        segments and their adjacent crossing.
+
+        Returns:
+            list: A list of flypes, each represented as [sequence1, sequence2, crossing].
+        """
         n = len(self.dowker)
         flypes = []
 
@@ -96,7 +131,7 @@ class AlternatingKnot(Knot):
                     even = self.dowker[int((number - 1)/2)]      #Finds corresponding even number of odd # in sequence1 in dowker code
                     sequence2.append(even)             #Adds corresponding even number to sequence2
                 if y > 0:           #Begins checking consecutiveness of sequence2 if length of it greater than equal to 2
-                    latest = sequence2[len(sequence2) - 1]              #Stores most recently added element to sequence
+                    latest = sequence2[-1]              #Stores most recently added element to sequence
                     sequence2.sort()              #Sorts the second sequence to find start and end of it
                     start = sequence2[0]           #Stores smallest number in subsequence
                     for z in range(len(sequence2)):               #Iterates through subsequence
@@ -111,9 +146,9 @@ class AlternatingKnot(Knot):
                         flypes.append(AlternatingKnot.flype_appendage(flag, flypes, crossing, sequence1, sequence2))          #Appends tangle and crossing if possible flype
                         flag, crossing = AlternatingKnot.flype_crossing(self, sequence2[0] - 1, sequence1, sequence2)         #Finds a crossing before start of second sequence
                         flypes.append(AlternatingKnot.flype_appendage(flag, flypes, crossing, sequence1, sequence2))               
-                        flag, crossing = AlternatingKnot.flype_crossing(self, sequence1[len(sequence1) - 1] + 1, sequence1, sequence2)            #Finds a crossing after end of first sequence
+                        flag, crossing = AlternatingKnot.flype_crossing(self, sequence1[-1] + 1, sequence1, sequence2)            #Finds a crossing after end of first sequence
                         flypes.append(AlternatingKnot.flype_appendage(flag, flypes, crossing, sequence1, sequence2))
-                        flag, crossing = AlternatingKnot.flype_crossing(self, sequence2[len(sequence2) - 1] + 1, sequence1, sequence2)            #Finds a crossing after end of second sequence
+                        flag, crossing = AlternatingKnot.flype_crossing(self, sequence2[-1] + 1, sequence1, sequence2)            #Finds a crossing after end of second sequence
                         flypes.append(AlternatingKnot.flype_appendage(flag, flypes, crossing, sequence1, sequence2))
                         flypes = Knot.list_remove(flypes)             #Removes all lists added through flype_appendage()
         
@@ -126,6 +161,18 @@ class AlternatingKnot(Knot):
         return flypes
     
     def flype_crossing(self, x, sequence1, sequence2):
+        """
+        Checks whether a crossing adjacent to a given tangle is a valid flype crossing.
+
+        Args:
+            x (int): The crossing number to check (can be outside 1–2n, will wrap).
+            sequence1 (list): The first half of the tangle.
+            sequence2 (list): The second half of the tangle.
+
+        Returns:
+            tuple: (bool, int) — True and the crossing number if valid, 
+                otherwise False and the candidate crossing.
+        """
         n = len(self.dowker)
 
         if x < 1:            #If crossing being checked is below 1, wraps to top of dowker code
@@ -139,9 +186,9 @@ class AlternatingKnot(Knot):
                 return True, odd
             elif sequence2[0] - 1 == odd:            #Checks if before sequence2 matches crossing
                 return True, odd
-            elif sequence1[len(sequence1) - 1] + 1 == odd:               #Checks if after sequence1 matches crossing
+            elif sequence1[-1] + 1 == odd:               #Checks if after sequence1 matches crossing
                 return True, odd
-            elif sequence2[len(sequence2) - 1] + 1 == odd:               #Checks if after sequence2 matches crossing
+            elif sequence2[-1] + 1 == odd:               #Checks if after sequence2 matches crossing
                 return True, odd
             else:
                 return False, odd              #If no matches return false
@@ -152,14 +199,28 @@ class AlternatingKnot(Knot):
                 return True, odd
             elif sequence2[0] - 1 == self.dowker[index]:            #Checks if before sequence2 matches crossing
                 return True, odd
-            elif sequence1[len(sequence1) - 1] + 1 == self.dowker[index]:            #Checks if after sequence1 matches crossing
+            elif sequence1[-1] + 1 == self.dowker[index]:            #Checks if after sequence1 matches crossing
                 return True, odd
-            elif sequence2[len(sequence2) - 1] + 1 == self.dowker[index]:          #Checks if after sequence2 matches crossing
+            elif sequence2[-1] + 1 == self.dowker[index]:          #Checks if after sequence2 matches crossing
                 return True, odd
             else:
                 return False, odd              #If no matches return false
 
     def flype_appendage(flag, flypes, crossing, sequence1, sequence2):
+        """
+        Builds a flype triple if the given crossing is valid and not already recorded.
+
+        Args:
+            flag (bool): Whether the crossing is valid.
+            flypes (list): Existing list of flypes.
+            crossing (int): The adjacent crossing to the tangle.
+            sequence1 (list): First half of the tangle.
+            sequence2 (list): Second half of the tangle.
+
+        Returns:
+            list: A flype [sequence1, sequence2, crossing] if valid, 
+                otherwise an empty list.
+        """
         newflype = []            #Creates a list of a flype to add to list of flypes
         if flag:         #Checks if flype is to be added
             if len(flypes) == 0:               #Always adds flype if one to be added and none yet in list
@@ -179,6 +240,13 @@ class AlternatingKnot(Knot):
         return newflype     
 
     def make_lexographic(self):
+        """
+        Converts the Dowker code into its lexicographically minimal form
+        by rotating and correcting traversal direction.
+
+        Returns:
+            list: A new Dowker code representing the canonical form.
+        """
         n = len(self.dowker)
         distances = []
         dowker = []
@@ -228,6 +296,18 @@ class AlternatingKnot(Knot):
         return dowker
 
     def perform_flype(self, flype):
+        """
+        Applies a flype transformation to the current knot graph.
+
+        Edits the underlying graph to swap tangle segments around a valid 
+        flype crossing, and reconstructs the Dowker code.
+
+        Args:
+            flype (list): A flype triple [sequence1, sequence2, crossing].
+
+        Returns:
+            list: The Dowker code after the flype is performed and re-normalized.
+        """
         G = Knot.graphify_dowker(self)
         #net.draw(G, with_labels = True)
         #plt.show()
@@ -251,12 +331,12 @@ class AlternatingKnot(Knot):
         for edgecross in crossing_edge_edit:
             for edgetang in tangle_edge_edit:
                 if edgetang == 0 or edgecross == 0:
-                        pass
+                    pass
                 elif set(edgecross) == set(edgetang):
-                        index = crossing_edge_edit.index(edgecross)
-                        crossing_edge_edit[index] = 0
-                        index = tangle_edge_edit.index(edgetang)
-                        tangle_edge_edit[index] = 0
+                    index = crossing_edge_edit.index(edgecross)
+                    crossing_edge_edit[index] = 0
+                    index = tangle_edge_edit.index(edgetang)
+                    tangle_edge_edit[index] = 0
         crossing_edge_edit = Knot(crossing_edge_edit).zero_remove()
         tangle_edge_edit = Knot(tangle_edge_edit).zero_remove()
         for edge in tangle_edge_edit:
@@ -298,6 +378,16 @@ class AlternatingKnot(Knot):
         return dowker   
 
     def edge_identification(self, number, max):
+        """
+        Identifies the graph edge corresponding to a given crossing.
+
+        Args:
+            number (int): The crossing number (odd or even).
+            is_end_of_tangle (bool): Whether this is the trailing end of a tangle.
+
+        Returns:
+            list: A two-element list representing the edge as [node1, node2].
+        """
         n = len(self.dowker)
         edge = []
 
@@ -340,6 +430,19 @@ class AlternatingKnot(Knot):
         return edge
 
     def find_flype_class(self, oldcheckedcodes):
+        """
+        Recursively computes the flype equivalence class of a knot.
+
+        Applies all valid flypes to the current knot and gathers all 
+        Dowker codes reachable through flypes.
+
+        Args:
+            oldcheckedcodes (list): A list of Dowker codes already known 
+                                    to be in the same flype class.
+
+        Returns:
+            list: A complete list of Dowker codes in the flype class.
+        """
         # created checked list, adding current knot
         checked = oldcheckedcodes + [self.dowker]
         checked = [x for n,x in enumerate(checked) if x not in checked[:n]] # removes duplicates
