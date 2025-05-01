@@ -171,6 +171,7 @@ class AlternatingKnot(Knot):
                 newflype.append(crossing)
         return newflype     
 
+    # this function is not used anywhere
     def flype_lexographic(self, flypeddowker, permutations):
         if flypeddowker in permutations and self.dowker != flypeddowker:
             for i in range(len(flypeddowker)):

@@ -31,7 +31,8 @@ def gen_alternating_knots():
           if permutation in permutations:
                flypeclass = AlternatingKnot.find_flype_class(AlternatingKnot(permutation), [permutation]) 
                permutations = [perm for perm in permutations if perm not in flypeclass] # removes all permutations that are in the flypeclass
-
+               
+               # deletes all flypes in flype class and finds the lexographically minimal code, stored in AlternatingKnot(flypeclass)[0]???
                for x in range(len(permutation)):
                     integers = []
                     for flype in flypeclass:
