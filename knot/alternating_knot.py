@@ -75,11 +75,12 @@ class AlternatingKnot(Knot):
     # detects all order-1 flypes (flypable tangles) in the knot, returning data structures to describe the sequences involved and the crossing location.
     def flype_detect(self):
         flypes = []
-        dowker = self.dowker
-        for x in range(2 * len(self.dowker)):              #Iterates through each number in dowker code
-            sequence1 = []           #Two sequences that make up tangle
+
+        for x in range(2 * len(self.dowker)): # iterate 1 through 2n (all possible starting points)
+            sequence1 = []           # Two sequences that make up tangle
             sequence2 = []
             consecutive = True            #Variable for consecutiveness indicating two strands
+            
             for y in range(len(self.dowker) - 1):             #Looking at the string up to y away from number dictated by x
                 number = x + y + 1            #Numbers in sequence 1
                 if number > 2 * len(self.dowker):            #If number is greater than largest number in dowker code, wraps back around
@@ -341,22 +342,27 @@ class AlternatingKnot(Knot):
         return edge
 
     def find_flype_class(self, oldcheckedcodes):
+        # created checked list, adding current knot
+        checked = oldcheckedcodes + [self.dowker]
+        checked = [x for n,x in enumerate(checked) if x not in checked[:n]] # removes duplicates
+        
+        # find all flypes and flype codes
         flypes = AlternatingKnot.flype_detect(self)
-        checked = []
-        checked = checked + oldcheckedcodes
-        checked.append(self.dowker)
-        checked = [x for n,x in enumerate(checked) if x not in checked[:n]]
-        codesfromflypes = []
+
+        flype_codes = []
         for flype in flypes:
-            newcode = AlternatingKnot.perform_flype(self, flype)
-            codesfromflypes.append(newcode)
-        codesfromflypes = [x for n,x in enumerate(codesfromflypes) if x not in codesfromflypes[:n]]
-        comparison = checked + codesfromflypes
-        comparison = [x for n,x in enumerate(comparison) if x not in comparison[:n]]
-        if comparison == checked:
+            flype_codes.append(AlternatingKnot.perform_flype(self, flype))
+        flype_codes = [x for n,x in enumerate(flype_codes) if x not in flype_codes[:n]] # removes duplicates
+
+
+        # check if flype codes are already in checked list
+        comparison = checked + flype_codes
+        comparison = [x for n,x in enumerate(comparison) if x not in comparison[:n]] # removes duplicates
+        
+        if comparison == checked: # no new flype codes
             return checked
-        else:
-            for code in codesfromflypes:
+        else: # new flype codes found
+            for code in flype_codes:
                 if code not in checked:
-                    checked = AlternatingKnot.find_flype_class(Knot(code), checked)
+                    checked = AlternatingKnot.find_flype_class(Knot(code), checked) # recursively compute flype class of new codes
             return checked
