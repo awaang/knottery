@@ -28,7 +28,7 @@ class Knot:
                     # adjust the dowker code for the removed crossing
                     for x in range(len(self.dowker)):
                          if np.abs(self.dowker[x]) > even: 
-                              self.dowker[x] = Knot.reidreadjust(self.dowker[x])
+                              self.dowker[x] = Knot.reid_readjust(self.dowker[x])
 
           return self.dowker
     
@@ -69,15 +69,15 @@ class Knot:
                               even_z = np.abs(self.dowker[z])
                               if even_x > even_y:        
                                    if even_z > even_x:
-                                        self.dowker[z] = Knot.reidreadjust(self.dowker[z])              
+                                        self.dowker[z] = Knot.reid_readjust(self.dowker[z])              
                                    if even_z > even_y:
-                                        self.dowker[z] = Knot.reidreadjust(self.dowker[z])
+                                        self.dowker[z] = Knot.reid_readjust(self.dowker[z])
                                         
                               else:
                                    if even_z > even_y:
-                                        self.dowker[z] = Knot.reidreadjust(self.dowker[z])
+                                        self.dowker[z] = Knot.reid_readjust(self.dowker[z])
                                    if even_z > even_x:
-                                        self.dowker[z] = Knot.reidreadjust(self.dowker[z])
+                                        self.dowker[z] = Knot.reid_readjust(self.dowker[z])
                          
                          # update even_x after removal
                          even_x = self.dowker[x]
@@ -185,7 +185,7 @@ class Knot:
                     dowker[y] = dowker[y] * -1
                return dowker                 
     
-     def reidreadjust(entry):       #Helper to readjust dowker code appropriately for signage after reid move
+     def reid_readjust(entry):       #Helper to readjust dowker code appropriately for signage after reid move
           if entry > 0:
                entry = entry - 2
           else:
