@@ -5,10 +5,11 @@ import networkx as net
 class AlternatingKnot(Knot):
     # checks if dowker code is lexicographically minimal
     def is_lexographic(self):
+        n = len(self.dowker)
         start = self.dowker[0] - 1    #Stores the difference of the first crossing numbers
-        if start > len(self.dowker):        #If reversing traversal direction would make a smaller diff, return False
+        if start > n:        #If reversing traversal direction would make a smaller diff, return False
             return False
-        for crossing in range(len(self.dowker)):   #Iterates thru code, checks if crossings are same distance or less
+        for crossing in range(n):   #Iterates thru code, checks if crossings are same distance or less
             odd = 2 * crossing + 1                #Odd part of dowker code
             even  = self.dowker[crossing]            #Even part of dowker code
             diff = np.abs(odd - even)           #Checks difference of each crossing in dowker code
@@ -18,9 +19,10 @@ class AlternatingKnot(Knot):
     
     # checks if dowker code is prime
     def is_prime(self):
+        n = len(self.dowker)
         sequence = []             #List for consecutive subsequence that indicates composite knot
-        for x in range(len(self.dowker)):             #Iterates thru dowker code
-            for y in (range(len(self.dowker) - x)):           #At each index in dowker code, iterates through remainder of code
+        for x in range(n):             #Iterates thru dowker code
+            for y in (range(n - x)):           #At each index in dowker code, iterates through remainder of code
                 consecutive = True            #Variable for consecutiveness of subsequence
                 odd = 2 * (x + y) + 1              #Stores odd part of dowker code adjusting for the starting index for subsequence
                 even = self.dowker[x + y]          #Stores even part of dowker code adjusting for even part of subsequence 
@@ -33,7 +35,7 @@ class AlternatingKnot(Knot):
                     if start + z not in sequence:           #Checks if each consecutive number is in not subsequence
                         consecutive = False           #Flags for non consecutive subsequences
                 #print("Start:", start)
-                if consecutive == True and len(sequence) != len(self.dowker) * 2:               #If consecutive subsequence that is not entire dowker code, return composite
+                if consecutive == True and len(sequence) != 2 * n:               #If consecutive subsequence that is not entire dowker code, return composite
                     return False
             sequence = []            #Resets subsequence for next index in dowker code
         return True               #If no consecutive subsequences found, return prime
@@ -74,17 +76,18 @@ class AlternatingKnot(Knot):
     
     # detects all order-1 flypes (flypable tangles) in the knot, returning data structures to describe the sequences involved and the crossing location.
     def flype_detect(self):
+        n = len(self.dowker)
         flypes = []
 
-        for x in range(2 * len(self.dowker)): # iterate 1 through 2n (all possible starting points)
+        for x in range(2 * n): # iterate 1 through 2n (all possible starting points)
             sequence1 = []           # Two sequences that make up tangle
             sequence2 = []
             consecutive = True            #Variable for consecutiveness indicating two strands
 
-            for y in range(len(self.dowker)-1):             #Looking at the string up to y away from number dictated by x
+            for y in range(n-1):             #Looking at the string up to y away from number dictated by x
                 number = x + y + 1            #Numbers in sequence 1
-                if number > 2 * len(self.dowker):            #If number is greater than largest number in dowker code, wraps back around
-                    number = number - 2 * len(self.dowker)
+                if number > 2 * n:            #If number is greater than largest number in dowker code, wraps back around
+                    number = number - 2 * n
                 sequence1.append(number)           #Adds number to sequence1
                 if (number) % 2 == 0: #If sequence1 element is even
                     index = self.dowker.index(number)            #Finds index of number in sequence1 in dowker code
@@ -99,7 +102,7 @@ class AlternatingKnot(Knot):
                     for z in range(len(sequence2)):               #Iterates through subsequence
                         if start + z not in sequence2:           #Checks if each consecutive number is in not subsequence
                             consecutive = False
-                    if consecutive == False:
+                    if not consecutive:
                         sequence1.pop()          #Avoids flypes changing when sequence changes
                         sequence2.remove(latest)             #Avoids flypes changing when sequence changes
                         break               #Rest of sequence2 wont be consecutive if this part isnt
@@ -117,16 +120,18 @@ class AlternatingKnot(Knot):
         for i in range(len(flypes)):             #Removes the case of crossing for flype detected inside tangle
             if flypes[i][2] in flypes[i][0] or flypes[i][2] in flypes[i][1]:
                 flypes[i] = 0
-            elif len(flypes[i][0]) == len(self.dowker) - 1:
+            elif len(flypes[i][0]) == n - 1:
                 flypes[i] = 0
         flypes = Knot(flypes).zero_remove() # remove all zeroed flypes
         return flypes
     
     def flype_crossing(self, x, sequence1, sequence2):
+        n = len(self.dowker)
+
         if x < 1:            #If crossing being checked is below 1, wraps to top of dowker code
-            x = 2 * len(self.dowker) + x
-        elif x >  2 * len(self.dowker):               #If crossing being checked above biggest # in dowker code, wraps back to 1
-            x = x - 2 * len(self.dowker)
+            x = 2 * n + x
+        elif x >  2 * n:               #If crossing being checked above biggest # in dowker code, wraps back to 1
+            x = x - 2 * n
         if x % 2 == 0:       #If x is even
             index = self.dowker.index(x)             #Finds index of even number in dowker code
             odd = 2 * index + 1            #Constructs odd number corresponding to the even x    
@@ -156,7 +161,7 @@ class AlternatingKnot(Knot):
 
     def flype_appendage(flag, flypes, crossing, sequence1, sequence2):
         newflype = []            #Creates a list of a flype to add to list of flypes
-        if flag == True:         #Checks if flype is to be added
+        if flag:         #Checks if flype is to be added
             if len(flypes) == 0:               #Always adds flype if one to be added and none yet in list
                 newflype.append(sequence1)              #Adds two sequences and crossing to newflype
                 newflype.append(sequence2)
@@ -173,54 +178,45 @@ class AlternatingKnot(Knot):
                 newflype.append(crossing)
         return newflype     
 
-    # this function is not used anywhere
-    def flype_lexographic(self, flypeddowker, permutations):
-        if flypeddowker in permutations and self.dowker != flypeddowker:
-            for i in range(len(flypeddowker)):
-                if self.dowker[i] > flypeddowker[i]:
-                    index = permutations.index(self.dowker)
-                    permutations[index] = 0
-                    return permutations
-                elif self.dowker[i] < flypeddowker[i]:
-                    index = permutations.index(flypeddowker)
-                    permutations[index] = 0
-                    return permutations
-        return permutations
-
     def make_lexographic(self):
-        predowker = self.dowker
+        n = len(self.dowker)
         distances = []
         dowker = []
-        for crossing in range(len(self.dowker)):
+
+        for crossing in range(n):
             odd = 2 * crossing + 1
             even = self.dowker[crossing]
             diffforward = np.abs(odd - even)
-            diffbackward = 2 * len(self.dowker) - diffforward
+            diffbackward = 2 * n - diffforward
             distances.append(diffforward)
             distances.append(diffbackward)
+        
         minimum = min(distances)
         index = distances.index(minimum)
         startindex = index // 2
         odd = 2 * startindex + 1
         even = self.dowker[startindex]
+        
         if index % 2 == 0:
             correction = min(odd, even) - 1
         else:
             correction = max(odd, even) - 1
         newfromodds = []
         newfromevens = []
-        for crossing in range(len(self.dowker)):
+        
+        for crossing in range(n):
             oldodd = 2 * crossing + 1
             newfromodd = oldodd - correction
             if newfromodd < 1:
-                newfromodd = 2 * len(self.dowker) - np.abs(newfromodd)
+                newfromodd = 2 * n - np.abs(newfromodd)
             oldeven = self.dowker[crossing]
             newfromeven = oldeven - correction
             if newfromeven < 1:
-                newfromeven = 2 * len(self.dowker) - np.abs(newfromeven)
+                newfromeven = 2 * n - np.abs(newfromeven)
             newfromodds.append(newfromodd)
             newfromevens.append(newfromeven)
-        for crossing in range(len(self.dowker)):
+        
+        for crossing in range(n):
             odd = 2 * crossing + 1
             if correction % 2 == 0:
                 index = newfromodds.index(odd)
@@ -232,70 +228,69 @@ class AlternatingKnot(Knot):
         return dowker
 
     def perform_flype(self, flype):
-        startingdowker = self.dowker
         G = Knot.graphify_dowker(self)
         #net.draw(G, with_labels = True)
         #plt.show()
-        tangleedgeedit = []
-        crossingedgeedit = []
+        tangle_edge_edit = []
+        crossing_edge_edit = []
         sequence1min = flype[0][0]
         sequence2min = flype[1][0]
         sequence1max = flype[0][len(flype[1]) - 1]
         sequence2max = flype[1][len(flype[1]) - 1]
-        crossingodd = flype[2]
-        indexodd = int((crossingodd - 1)/2)
-        crossingeven = self.dowker[indexodd]
-        tangleedgeedit.append(AlternatingKnot.edge_identification(self, sequence1min, False))
-        tangleedgeedit.append(AlternatingKnot.edge_identification(self, sequence2min, False))
-        tangleedgeedit.append(AlternatingKnot.edge_identification(self, sequence1max, True))
-        tangleedgeedit.append(AlternatingKnot.edge_identification(self, sequence2max, True))
-        crossingedgeedit.append(AlternatingKnot.edge_identification(self, crossingodd, True))
-        crossingedgeedit.append(AlternatingKnot.edge_identification(self, crossingodd, False))
-        crossingedgeedit.append(AlternatingKnot.edge_identification(self, crossingeven, True))
-        crossingedgeedit.append(AlternatingKnot.edge_identification(self, crossingeven, False))
-        for edgecross in crossingedgeedit:
-            for edgetang in tangleedgeedit:
+        crossing_odd = flype[2]
+        index_odd = int((crossing_odd - 1)/2)
+        crossing_even = self.dowker[index_odd]
+        tangle_edge_edit.append(AlternatingKnot.edge_identification(self, sequence1min, False))
+        tangle_edge_edit.append(AlternatingKnot.edge_identification(self, sequence2min, False))
+        tangle_edge_edit.append(AlternatingKnot.edge_identification(self, sequence1max, True))
+        tangle_edge_edit.append(AlternatingKnot.edge_identification(self, sequence2max, True))
+        crossing_edge_edit.append(AlternatingKnot.edge_identification(self, crossing_odd, True))
+        crossing_edge_edit.append(AlternatingKnot.edge_identification(self, crossing_odd, False))
+        crossing_edge_edit.append(AlternatingKnot.edge_identification(self, crossing_even, True))
+        crossing_edge_edit.append(AlternatingKnot.edge_identification(self, crossing_even, False))
+        for edgecross in crossing_edge_edit:
+            for edgetang in tangle_edge_edit:
                 if edgetang == 0 or edgecross == 0:
                         pass
                 elif set(edgecross) == set(edgetang):
-                        index = crossingedgeedit.index(edgecross)
-                        crossingedgeedit[index] = 0
-                        index = tangleedgeedit.index(edgetang)
-                        tangleedgeedit[index] = 0
-        crossingedgeedit = Knot(crossingedgeedit).zero_remove()
-        tangleedgeedit = Knot(tangleedgeedit).zero_remove()
-        for edge in tangleedgeedit:
+                        index = crossing_edge_edit.index(edgecross)
+                        crossing_edge_edit[index] = 0
+                        index = tangle_edge_edit.index(edgetang)
+                        tangle_edge_edit[index] = 0
+        crossing_edge_edit = Knot(crossing_edge_edit).zero_remove()
+        tangle_edge_edit = Knot(tangle_edge_edit).zero_remove()
+        for edge in tangle_edge_edit:
                 edgetuple = (edge[0], edge[1])
-                if edgetuple in G.edges and edge not in crossingedgeedit:
+                if edgetuple in G.edges and edge not in crossing_edge_edit:
                         G.remove_edge(edge[0], edge[1])
-        for edge in crossingedgeedit:
+        for edge in crossing_edge_edit:
             edgetuple = (edge[0], edge[1])
             if edgetuple in G.edges:
                 G.remove_edge(edge[0], edge[1])
         #net.draw(G, with_labels = True)
         #plt.show()
         if len(flype[0]) % 2 == 0: # If there are an even number of crossings inside flype
-                if crossingedgeedit[0][0] % 2 == tangleedgeedit[0][0] % 2:
-                        G.add_edge(crossingedgeedit[0][0], tangleedgeedit[0][1])
-                        G.add_edge(tangleedgeedit[0][0], crossingedgeedit[0][1])
-                        G.add_edge(crossingedgeedit[1][0], tangleedgeedit[1][1])
-                        G.add_edge(tangleedgeedit[1][0], crossingedgeedit[1][1])
-                else:
-                        G.add_edge(crossingedgeedit[0][0], tangleedgeedit[1][1])
-                        G.add_edge(tangleedgeedit[0][0], crossingedgeedit[1][1])
-                        G.add_edge(crossingedgeedit[1][0], tangleedgeedit[0][1])
-                        G.add_edge(tangleedgeedit[1][0], crossingedgeedit[0][1])
-        else:
-            if crossingedgeedit[0][0] % 2 == tangleedgeedit[0][0] % 2:
-                G.add_edge(crossingedgeedit[0][0], tangleedgeedit[1][1])
-                G.add_edge(tangleedgeedit[0][0], crossingedgeedit[1][1])
-                G.add_edge(crossingedgeedit[1][0], tangleedgeedit[0][1])
-                G.add_edge(tangleedgeedit[1][0], crossingedgeedit[0][1])
+            if crossing_edge_edit[0][0] % 2 == tangle_edge_edit[0][0] % 2:
+                G.add_edge(crossing_edge_edit[0][0], tangle_edge_edit[0][1])
+                G.add_edge(tangle_edge_edit[0][0], crossing_edge_edit[0][1])
+                G.add_edge(crossing_edge_edit[1][0], tangle_edge_edit[1][1])
+                G.add_edge(tangle_edge_edit[1][0], crossing_edge_edit[1][1])
             else:
-                G.add_edge(crossingedgeedit[0][0], tangleedgeedit[0][1])
-                G.add_edge(tangleedgeedit[0][0], crossingedgeedit[0][1])
-                G.add_edge(crossingedgeedit[1][0], tangleedgeedit[1][1])
-                G.add_edge(tangleedgeedit[1][0], crossingedgeedit[1][1])
+                G.add_edge(crossing_edge_edit[0][0], tangle_edge_edit[1][1])
+                G.add_edge(tangle_edge_edit[0][0], crossing_edge_edit[1][1])
+                G.add_edge(crossing_edge_edit[1][0], tangle_edge_edit[0][1])
+                G.add_edge(tangle_edge_edit[1][0], crossing_edge_edit[0][1])
+        else:
+            if crossing_edge_edit[0][0] % 2 == tangle_edge_edit[0][0] % 2:
+                G.add_edge(crossing_edge_edit[0][0], tangle_edge_edit[1][1])
+                G.add_edge(tangle_edge_edit[0][0], crossing_edge_edit[1][1])
+                G.add_edge(crossing_edge_edit[1][0], tangle_edge_edit[0][1])
+                G.add_edge(tangle_edge_edit[1][0], crossing_edge_edit[0][1])
+            else:
+                G.add_edge(crossing_edge_edit[0][0], tangle_edge_edit[0][1])
+                G.add_edge(tangle_edge_edit[0][0], crossing_edge_edit[0][1])
+                G.add_edge(crossing_edge_edit[1][0], tangle_edge_edit[1][1])
+                G.add_edge(tangle_edge_edit[1][0], crossing_edge_edit[1][1])
         #net.draw(G, with_labels = True)
         #plt.show()
         dowker = Knot.dowkerify_graph(self, G)
@@ -303,13 +298,15 @@ class AlternatingKnot(Knot):
         return dowker   
 
     def edge_identification(self, number, max):
+        n = len(self.dowker)
         edge = []
+
         if number % 2 == 0: 
             index = self.dowker.index(number)
-            if max == True:
+            if max:
                 node1 = (4 * index) + 3
                 next = number + 1
-                if next > 2 * len(self.dowker):
+                if next > 2 * n:
                         next = 1
                 nextindex = int((next - 1)/2)
                 node2 = (4 * nextindex) + 2
@@ -324,7 +321,7 @@ class AlternatingKnot(Knot):
                 edge.append(node2)
         else:
             index = int((number - 1)/2)
-            if max == True:
+            if max:
                 node1 = (4 * index) + 4
                 next = number + 1
                 nextindex = self.dowker.index(next)
@@ -335,7 +332,7 @@ class AlternatingKnot(Knot):
                 node1 = (4 * index) + 2
                 before = number - 1
                 if before < 1: 
-                        before = 2 * len(self.dowker)
+                        before = 2 * n
                 beforeindex = self.dowker.index(before)
                 node2 = (4 * beforeindex) + 3
                 edge.append(node1)
