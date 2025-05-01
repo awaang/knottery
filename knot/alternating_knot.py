@@ -357,5 +357,5 @@ class AlternatingKnot(Knot):
         else:
             for code in codesfromflypes:
                 if code not in checked:
-                        checked = AlternatingKnot.findflypeclass(Knot(code), checked)
+                    checked = AlternatingKnot.findflypeclass(Knot(code), checked)
             return checked

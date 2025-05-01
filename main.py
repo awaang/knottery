@@ -30,7 +30,8 @@ def genAlternatingKnots():
      for permutation in permutations:
           if permutation in permutations:
                flypeclass = AlternatingKnot.findflypeclass(AlternatingKnot(permutation), [permutation]) 
-               permutations = [perm for perm in permutations if perm not in flypeclass] 
+               permutations = [perm for perm in permutations if perm not in flypeclass] # removes all permutations that are in the flypeclass
+
                for x in range(len(permutation)):
                     integers = []
                     for flype in flypeclass:
@@ -43,9 +44,10 @@ def genAlternatingKnots():
                          if flypeclass[y] != 0:
                               if integers[y] != minimum:
                                    flypeclass[y] = 0
-               finallist.append(AlternatingKnot.zeroremove(AlternatingKnot(flypeclass))[0]) 
+
+               finallist.append(AlternatingKnot.zeroremove(AlternatingKnot(flypeclass))[0]) # append the lexographically minimal code of its flype class to the final list
      
-     finallist = [x for n,x in enumerate(finallist) if x not in finallist[:n]] # removes duplicates
+     finallist = [x for n, x in enumerate(finallist) if x not in finallist[:n]] # removes duplicates
 
      return finallist
 
