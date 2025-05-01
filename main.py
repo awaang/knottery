@@ -59,10 +59,12 @@ def main():
      print("\nAlternating Knots:")
      for knot in AlternatingList:
           print(knot)
+     print(len(AlternatingList))
 
      print("\nNon-Alternating Knots:")
      for knot in NonAlternatingList:
           print(knot)
+     print(len(NonAlternatingList))
 
 if __name__ == "__main__":
     main()
