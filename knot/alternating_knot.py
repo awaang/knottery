@@ -241,8 +241,7 @@ class AlternatingKnot(Knot):
 
     def make_lexographic(self):
         """
-        Converts the Dowker code into its lexicographically minimal form
-        by rotating and correcting traversal direction.
+        Converts the Dowker code into its lexicographically minimal form by rotating and correcting traversal direction.
 
         Returns:
             list: A new Dowker code representing the canonical form.
@@ -467,3 +466,31 @@ class AlternatingKnot(Knot):
                 if code not in checked:
                     checked = AlternatingKnot.find_flype_class(Knot(code), checked) # recursively compute flype class of new codes
             return checked
+        
+    def compute_flype_minimals(permutations):
+        final_list = []
+
+        for permutation in permutations:
+            if permutation in permutations:
+                flypeclass = AlternatingKnot.find_flype_class(AlternatingKnot(permutation), [permutation]) 
+                permutations = [perm for perm in permutations if perm not in flypeclass] # removes all permutations that are in the flypeclass
+                
+                # deletes all flypes in flype class and finds the lexographically minimal code, stored in AlternatingKnot(flypeclass)[0]???
+                for x in range(len(permutation)):
+                        integers = []
+                        for flype in flypeclass:
+                            if flype != 0:
+                                integers.append(flype[x])
+                            else:
+                                integers.append(2 * len(permutation) + 1)
+                        minimum = min(integers)
+                        for y in range(len(integers)):
+                            if flypeclass[y] != 0:
+                                if integers[y] != minimum:
+                                    flypeclass[y] = 0
+
+                final_list.append(AlternatingKnot.zero_remove(AlternatingKnot(flypeclass))[0]) # append the lexographically minimal code of its flype class to the final list
+        
+        final_list = [x for n, x in enumerate(final_list) if x not in final_list[:n]] # removes duplicates
+
+        return final_list
