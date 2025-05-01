@@ -4,5 +4,5 @@ class NonAlternatingKnot(Knot):
     def isLexographic(self):
         return
 
-def gen_non_alternating_knots():
+def gen_non_alternating_knots(crossings):
         return []

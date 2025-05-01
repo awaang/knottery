@@ -11,8 +11,8 @@ from knot.non_alternating_knot import gen_non_alternating_knots
 # - at 8 crossings, there are 17 non prime knots included atm ????????
 
 def main():
-     AlternatingList = gen_alternating_knots()
-     NonAlternatingList = gen_non_alternating_knots()
+     AlternatingList = gen_alternating_knots(8)
+     NonAlternatingList = gen_non_alternating_knots(8)
 
      print("\nAlternating Knots:")
      for knot in AlternatingList:

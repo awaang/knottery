@@ -468,6 +468,17 @@ class AlternatingKnot(Knot):
             return checked
         
     def compute_flype_minimals(permutations):
+        """
+        Returns one lexicographically minimal Dowker code per flype equivalence class.
+
+        Removes all flype-equivalent codes from the input and keeps only the minimal representative.
+        
+        Args:
+            permutations (list): List of alternating Dowker codes.
+        
+        Returns:
+            list: Minimal Dowker codes, one per flype class.
+        """
         final_list = []
 
         for permutation in permutations:
@@ -495,8 +506,20 @@ class AlternatingKnot(Knot):
 
         return final_list
     
-def gen_alternating_knots():
-    permutations = gen_dowkers(8) # generate all dowker codes with 8 crossings
+def gen_alternating_knots(crossings):
+    """
+    Generates all distinct, minimal alternating knots with the given number of crossings.
+
+    Filters out non-minimal, non-prime, and invalid knots, then removes flype duplicates.
+
+    Args:
+        crossings (int): Number of crossings in the knot.
+
+    Returns:
+        list: Canonical Dowker codes for alternating knots.
+    """
+    
+    permutations = gen_dowkers(crossings) # generate all dowker codes with 8 crossings
 
     permutations = [
         p for p in permutations
