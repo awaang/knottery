@@ -150,7 +150,7 @@ class AlternatingKnot(Knot):
                         flypes.append(AlternatingKnot.flype_appendage(flag, flypes, crossing, sequence1, sequence2))
                         flag, crossing = AlternatingKnot.flype_crossing(self, sequence2[-1] + 1, sequence1, sequence2)            #Finds a crossing after end of second sequence
                         flypes.append(AlternatingKnot.flype_appendage(flag, flypes, crossing, sequence1, sequence2))
-                        flypes = Knot.list_remove(flypes)             #Removes all lists added through flype_appendage()
+                        flypes = [flype for flype in flypes if len(flype) != 0] #Removes all lists added through flype_appendage()
         
         for i in range(len(flypes)):             #Removes the case of crossing for flype detected inside tangle
             if flypes[i][2] in flypes[i][0] or flypes[i][2] in flypes[i][1]:
@@ -228,7 +228,7 @@ class AlternatingKnot(Knot):
                 newflype.append(sequence2)
                 newflype.append(crossing)
             else:
-                flypes = Knot.list_remove(flypes)
+                flypes = [flype for flype in flypes if len(flype) != 0]
                 for flype in flypes:            #Avoids adding two duplicate flypes to list when x and y indices are flipped in flype_detect()
                         if sequence1 == flype[0] or sequence1 == flype[1]:
                             if sequence2 ==flype[0] or sequence2 == flype[1]:

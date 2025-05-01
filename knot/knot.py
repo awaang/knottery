@@ -7,6 +7,14 @@ class Knot:
         self.dowker = dowker  
 
      def typeI(self):
+          """
+          Applies all possible Type I Reidemeister moves to simplify the knot.
+
+          A Type I move removes a loop (a crossing paired with a consecutive odd number).
+
+          Returns:
+               list: The simplified Dowker code with applicable crossings removed.
+          """
           zeroes = 0 # tracks how many entries have been removed (set to 0)
 
           for x in range(len(self.dowker)):
@@ -33,6 +41,14 @@ class Knot:
           return self.dowker
     
      def typeII(self):
+          """
+          Applies all possible Type II Reidemeister moves to simplify the knot.
+
+          A Type II move removes a pair of adjacent, opposite-sign crossings.
+
+          Returns:
+               list: The simplified Dowker code with applicable pairs removed.
+          """
           zeroes_x = 0 # tracks removed entries in primary loop
 
           for x in range(len(self.dowker)):
@@ -85,6 +101,15 @@ class Knot:
           return self.dowker
     
      def typeIII(self):
+          """
+          Applies a Type III Reidemeister move when possible.
+
+          This move cyclically permutes three adjacent crossings and attempts to 
+          reduce the Dowker code via additional Type I and II moves.
+
+          Returns:
+               list: The potentially simplified Dowker code after a Type III move.
+          """
           self.dowker = Knot.typeII(Knot(self.dowker))           #Performs type I, II moves to simplify knot first
           self.dowker = Knot.typeI(Knot(self.dowker))
           self.dowker = Knot.zero_remove(Knot(self.dowker))
@@ -135,6 +160,16 @@ class Knot:
           return self.dowker
 
      def typeIII_flag(odd_x, odd_y, odd_z, even_x, even_y, even_z):
+          """
+          Checks whether a valid Type III move configuration is detected.
+
+          Args:
+               odd_x, odd_y, odd_z (int): Odd parts of three crossings.
+               even_x, even_y, even_z (int): Even parts of the corresponding crossings.
+
+          Returns:
+               tuple: (bool, bool) indicating (is_valid_typeIII, direction).
+          """
           dir = True  # direction flag for how to rotate the three crossings
 
           # take absolute values of even parts for comparison
@@ -168,6 +203,15 @@ class Knot:
                return False, dir  # all crossings have the same sign, invalid
               
      def typeIII_index(even_x, even_y, even_z): # handles same iteration indexes and zeroes
+          """
+          Ensures that a Type III candidate move involves distinct, non-zero crossings.
+
+          Args:
+               even_x, even_y, even_z (int): Even values of the three crossings.
+
+          Returns:
+               bool: True if the crossings are valid for Type III, False otherwise.
+          """
           # ensure all three crossings are at distinct indices
           if even_x != even_y and even_y != even_z and even_z != even_x:
                # ensure none of the crossings are removed (i.e., not zeroed)
@@ -175,17 +219,36 @@ class Knot:
                     return True
           return False
      
-     def typeIII_signs(x, y, z, dowker): # handles swapping of signs
-               #print(dowker[x], dowker[y], dowker[z])
-               if dowker[x] * dowker[y] < 0:           #If x, y diff sign, then opposite z crossing sign
-                    dowker[z] = dowker[z] * -1
-               elif dowker[y] * dowker[z] < 0:              #If y, z diff sign, then opposite x crossing sign
-                    dowker[x] = dowker[x] * -1
-               else:               #If x, z diff sign, then opposite y crossing sign
-                    dowker[y] = dowker[y] * -1
-               return dowker                 
+     def typeIII_signs(x, y, z, dowker): 
+          """
+          Adjusts the signs of crossings involved in a Type III move.
+
+          Args:
+               x, y, z (int): Indices of the three crossings.
+               dowker (list): The current Dowker code.
+
+          Returns:
+               list: Dowker code with adjusted crossing signs.
+          """
+          #print(dowker[x], dowker[y], dowker[z])
+          if dowker[x] * dowker[y] < 0:           #If x, y diff sign, then opposite z crossing sign
+               dowker[z] = dowker[z] * -1
+          elif dowker[y] * dowker[z] < 0:              #If y, z diff sign, then opposite x crossing sign
+               dowker[x] = dowker[x] * -1
+          else:               #If x, z diff sign, then opposite y crossing sign
+               dowker[y] = dowker[y] * -1
+          return dowker                 
     
-     def reid_readjust(entry):       #Helper to readjust dowker code appropriately for signage after reid move
+     def reid_readjust(entry): # helper to readjust dowker code appropriately for signage after reid move
+          """
+          Adjusts a Dowker entry to account for the removal of a crossing (used in Type I/II moves).
+
+          Args:
+               entry (int): The current Dowker code entry.
+
+          Returns:
+               int: The adjusted value after Reidemeister modification.
+          """
           if entry > 0:
                entry = entry - 2
           else:
@@ -193,6 +256,14 @@ class Knot:
           return entry
 
      def colorability(self):
+          """
+          Constructs the coloring matrix for the knot and computes its determinant.
+
+          The determinant is used to assess knot colorability (e.g., 3-colorability).
+
+          Returns:
+               int: Absolute value of the determinant of the coloring matrix.
+          """
           matrix = []
           for x in range(len(self.dowker) - 1):           #Iterate through dowker code
                understrand1 = x           #First understrand assignment determined by index in dowker code       
@@ -216,15 +287,23 @@ class Knot:
           det = int(np.abs(det))    
           return det
     
-     def list_remove(lst):
-          lst = [n for n in lst if len(n) != 0]
-          return lst
-    
      def zero_remove(self):               #Removes 0s from dowker codes
-         self.dowker = [n for n in self.dowker if n != 0]
-         return self.dowker
+          """
+          Removes all zero entries from the Dowker code.
+
+          Returns:
+               list: The Dowker code without zeros.
+          """
+          self.dowker = [n for n in self.dowker if n != 0]
+          return self.dowker
     
      def sign_flip(self):       #Used when all crossings on knot are negative
+          """
+          Flips the sign of all crossings if all entries in the Dowker code are negative.
+
+          Returns:
+               list: The Dowker code with flipped signs if applicable.
+          """
           flip = True
           for n in range(len(self.dowker)):
                if self.dowker[n] > 0:
@@ -235,6 +314,14 @@ class Knot:
           return self.dowker
 
      def graphify_dowker(self):
+          """
+          Converts the Dowker code into a planar graph representation.
+
+          Each crossing becomes a 4-vertex gadget; edges represent strand connections.
+
+          Returns:
+               networkx.Graph: A graph representing the knot diagram.
+          """
           G = net.Graph()
           crossings = len(self.dowker) # # of crossings for indexing
           for x in range(4 * crossings):
@@ -269,6 +356,17 @@ class Knot:
           return G
 
      def dowkerify_graph(self, G):
+          """
+          Reconstructs a Dowker code from a knot graph.
+
+          Walks the graph to track even/odd crossing assignments.
+
+          Args:
+               G (networkx.Graph): The graph representing the knot.
+
+          Returns:
+               list: The reconstructed Dowker code.
+          """
           node = 4
           dowker = []
           dowkeroddindex = []
@@ -309,9 +407,18 @@ class Knot:
           return f"{self.dowker}"
           
 def gen_dowkers(crossings):   #Generates all the possible dowker codes with up to n crossings
+     """
+     Generates all signed permutations of Dowker codes with up to the given number of crossings.
+
+     Args:
+          crossings (int): The maximum number of crossings.
+
+     Returns:
+          list: A list of lists, each representing a signed Dowker code permutation.
+     """
      numbers = []           #Used as a list of even numbers in dowker code up to n crossings
      #permut = []              #Used for all permutations of even numbers
-     permutneg = []           #Used for all permutations of even numbers w signs included
+     permutneg = []           #Used for all permutations of even numbers with signs included
      for x in range(crossings):         #Iterates through each # of crossings
           number = 2 * (x + 1)               #Generates even number to add to list
           numbers.append(number)                  #Appends even number to list of even #s
@@ -326,4 +433,4 @@ def gen_dowkers(crossings):   #Generates all the possible dowker codes with up t
           #for num in dowkers:
                #permutstor.append(num)             #Stores each dowker code in format for itertools.product            
           #permutneg.append(list(itertools.product(*([y, -y] for y in permutstor))))            #Uses dot product to generate neg and positive permutations
-     return permutneg              #Returns list of permutations w signs included
+     return permutneg              #Returns list of permutations with signs included
