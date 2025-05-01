@@ -1,4 +1,4 @@
-from knot.knot import Knot
+from knot.knot import Knot, gen_dowkers
 import numpy as np
 import networkx as net
 
@@ -494,3 +494,17 @@ class AlternatingKnot(Knot):
         final_list = [x for n, x in enumerate(final_list) if x not in final_list[:n]] # removes duplicates
 
         return final_list
+    
+def gen_alternating_knots():
+    permutations = gen_dowkers(8) # generate all dowker codes with 8 crossings
+
+    permutations = [
+        p for p in permutations
+        if AlternatingKnot(p).is_lexographic() # criteria 1: checks if the dowker code is lexographically minimal
+        and AlternatingKnot(p).is_prime() # criteria 2: checks if the dowker code is prime
+        and AlternatingKnot(p).is_possible() # criteria 3: checks if the dowker code is possible
+    ]
+
+    permutations = AlternatingKnot.compute_flype_minimals(permutations) # criteria 4: checks if the dowker code is minimal with respect to flyping
+
+    return permutations
