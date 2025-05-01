@@ -80,8 +80,8 @@ class AlternatingKnot(Knot):
             sequence1 = []           # Two sequences that make up tangle
             sequence2 = []
             consecutive = True            #Variable for consecutiveness indicating two strands
-            
-            for y in range(len(self.dowker) - 1):             #Looking at the string up to y away from number dictated by x
+
+            for y in range(len(self.dowker)-1):             #Looking at the string up to y away from number dictated by x
                 number = x + y + 1            #Numbers in sequence 1
                 if number > 2 * len(self.dowker):            #If number is greater than largest number in dowker code, wraps back around
                     number = number - 2 * len(self.dowker)
@@ -113,12 +113,13 @@ class AlternatingKnot(Knot):
                         flag, crossing = AlternatingKnot.flype_crossing(self, sequence2[len(sequence2) - 1] + 1, sequence1, sequence2)            #Finds a crossing after end of second sequence
                         flypes.append(AlternatingKnot.flype_appendage(flag, flypes, crossing, sequence1, sequence2))
                         flypes = Knot.list_remove(flypes)             #Removes all lists added through flype_appendage()
+        
         for i in range(len(flypes)):             #Removes the case of crossing for flype detected inside tangle
             if flypes[i][2] in flypes[i][0] or flypes[i][2] in flypes[i][1]:
                 flypes[i] = 0
             elif len(flypes[i][0]) == len(self.dowker) - 1:
                 flypes[i] = 0
-        flypes = Knot(flypes).zero_remove()            #For formatting
+        flypes = Knot(flypes).zero_remove() # remove all zeroed flypes
         return flypes
     
     def flype_crossing(self, x, sequence1, sequence2):
@@ -177,13 +178,13 @@ class AlternatingKnot(Knot):
         if flypeddowker in permutations and self.dowker != flypeddowker:
             for i in range(len(flypeddowker)):
                 if self.dowker[i] > flypeddowker[i]:
-                        index = permutations.index(self.dowker)
-                        permutations[index] = 0
-                        return permutations
+                    index = permutations.index(self.dowker)
+                    permutations[index] = 0
+                    return permutations
                 elif self.dowker[i] < flypeddowker[i]:
-                        index = permutations.index(flypeddowker)
-                        permutations[index] = 0
-                        return permutations
+                    index = permutations.index(flypeddowker)
+                    permutations[index] = 0
+                    return permutations
         return permutations
 
     def make_lexographic(self):
