@@ -488,17 +488,17 @@ class AlternatingKnot(Knot):
                 
                 # deletes all flypes in flype class and finds the lexographically minimal code, stored in AlternatingKnot(flypeclass)[0]???
                 for x in range(len(permutation)):
-                        integers = []
-                        for flype in flypeclass:
-                            if flype != 0:
-                                integers.append(flype[x])
-                            else:
-                                integers.append(2 * len(permutation) + 1)
-                        minimum = min(integers)
-                        for y in range(len(integers)):
-                            if flypeclass[y] != 0:
-                                if integers[y] != minimum:
-                                    flypeclass[y] = 0
+                    integers = []
+                    for flype in flypeclass:
+                        if flype != 0:
+                            integers.append(flype[x])
+                        else:
+                            integers.append(2 * len(permutation) + 1)
+                    minimum = min(integers)
+                    for y in range(len(integers)):
+                        if flypeclass[y] != 0:
+                            if integers[y] != minimum:
+                                flypeclass[y] = 0
 
                 final_list.append(AlternatingKnot.zero_remove(AlternatingKnot(flypeclass))[0]) # append the lexographically minimal code of its flype class to the final list
         
