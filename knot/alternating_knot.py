@@ -100,7 +100,7 @@ class AlternatingKnot(Knot):
         except Exception as e:
             return False
     
-    def flype_detect(self):
+    def flype_detect(self): 
         """
         Detects all valid order-1 flypes in the current knot.
 
