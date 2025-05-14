@@ -1,11 +1,6 @@
-dowker_example = [12,14,8,10,4,6,2]
-
-# itinerary: N-length list of length-2 tuples for each of N crossings
-# crossing_num: first position is a tuple indicating the crossing's numbers
-# sign: second position is an integer (-1 or 1) indicating under or over strand
-	# over means +1, under means -1
-
-itinerary_example = [((1,12),1), ((2,13),-1), ((3,14),1), ((4,9),-1), ((5,8),1), ((6,11),-1), ((7,10),1), ((8,5),-1), ((9,4),1), ((10,7),-1), ((11,6),1), ((12,1),-1), ((13,2),1), ((14,3),-1)]
+'''
+This file contains functions to convert between Dowker notation and itinerary notation.
+'''
 
 def get_paired_num(num, dowker, odds):
 	if num in dowker:
@@ -57,6 +52,15 @@ def itinerary_to_dowker(itinerary):
 
 		dowker.append(dowker_val)
 	return dowker
+
+
+# itinerary: N-length list of length-2 tuples for each of N crossings, where each tuple is made up of crossing_num and sign
+# crossing_num: first half of the tuple is a nested tuple indicating the crossing's numbers
+# sign: second half of the tuple is an integer (-1 or 1) indicating under or over strand
+	# over means +1, under means -1
+
+dowker_example = [12,14,8,10,4,6,2]
+itinerary_example = [((1,12),1), ((2,13),-1), ((3,14),1), ((4,9),-1), ((5,8),1), ((6,11),-1), ((7,10),1), ((8,5),-1), ((9,4),1), ((10,7),-1), ((11,6),1), ((12,1),-1), ((13,2),1), ((14,3),-1)]
 
 
 print("\n\n\n\nnew round of tests")
